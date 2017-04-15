@@ -12,8 +12,9 @@
 \usepackage{caption}
 \usepackage{subcaption}
 %\usepackage{minted} %code highlight
-
+\usepackage{fancyvrb}
 \usepackage[pdftex]{graphicx}
+\usepackage{tipa}
 %\DeclareGraphicsRule{*}{mps}{*}{}
 
 \geometry{
@@ -71,7 +72,7 @@ method(?M, returnType, int)
 
 \section{.QL}
 A .QL egy olyan lekérdező nyelv, amely külsőre nagyon hasonlít az SQL nyelvre. A szoftverfejlesztők által jól ismert SELECT-FROM-WHERE hármasra alapoznak, viszont a könnyebb olvashatóság érdekében a szelekció került a lekérdezés végére (FROM-WHERE-SELECT). A hasonlóság azonban kimerül a szintaktikában, a szemantikája teljesen eltérő az SQL nyelvtől. Így a .QL lekérdezések írása könnyen elsajátítható bármely szoftverfejlesztésben minimálisan is jártas felhasználó által az SQL szintaxisát alkalmazva. A .QL a Datalog nyelven alapszik, amely egy egyszerű logikai programozási nyelv. Mivel Datalogban rekurzív lekérdezések is használhatók, így a hívási gráf vagy az öröklődés hierarchiája is egyszerűen, könnyen alkalmazható. A .QL egy objektumorientált lekérdező nyelv, amelyben az osztályok predikátumok, az öröklődés pedig az implikációt jelenti. Ezáltal a lekérdezések újrahasznosíthatók, felhasználhatók akár más projektekben is.
-\par Select utasítások
+\subsection{Select utasítások}
 \par A Java programozási nyelvben az objektumok egyenlőségvizsgálatára az equals() függvényt használjuk. Ha egy osztály definiál saját equals() függvényt, akkor annak implementálnia kell a hashCode() függvényét is. Ez amiatt szükséges, ha hash alapú adatszerkezetbe rakjuk az adott osztály objektumait, akkor az objektumok ekvivalenciájának vizsgálata ne sérüljön. A lekérdező nyelvek segítségével egyszerűbben felderíthetők az ilyen hibák a forráskódban: keressük meg az olyan osztályokat, amik deklarálják az equals() függvényt, de a hashCode()-ot nem. Ez a lekérdezés a .QL-ben így néz ki:
 \begin{verbatim}
 from Class c
@@ -80,21 +81,67 @@ where c.declaresMethod("equals") and
       c.fromSource
 select c.getPackage(), c
 \end{verbatim}
-\par A Select rész hasonlóan az SQL-hez, kilistázza ezen osztályok csomagnevét és magának az osztálynak a nevét.
-\par Predikátumok
-\par Az elnevezett és parametrizált lekérdezéseket nevezzük predikátumoknak. Ezeket a predikátumokat felhasználhatjuk más lekérdezésekben is. A predikátumok által egyszerűen kaphatunk rendkívül komplex lekérdezéseket anélkül, hogy feláldoznánk az olvashatóságát a lekérdezésnek, hiszen megfelelő névválasztással a predikátumok absztraktabbá, tömörebbé tehetik azokat. 
-\par Aggregátor függvények
-\par Az SQL nyelv lehetőséget ad különböző összegek, átlagok, számlálások kiszámítására. Ezek az aggregátor függvények használata nehézkes, gyakran csak egymásba ágyazott utasításokkal értelmezhető. A .QL az Eindhoven Kvantor Jelölést használja, ami megkönnyíti az előbb említett függvények írását. Ahogyan SQL-ben, úgy .QL-ben is a SELECT utasításhoz írjuk az aggregátor függvényt. Azonban a GROUP BY utasítás nem szükséges .QL nyelvben. Az aggregátor függvény három részből áll: lokális változók, feltételek, term. Ezek a ’|’ karakterrel vannak elhatárolva és ezeket előzi meg az aggregátor függvény neve (sum, count, avg, min, max). A lokális változókat felhasználhatjuk a feltételekben, amik értelem szerűen szűrik a találatokat. A term határozza meg, hogy mely értéken szeretnénk aggregálni. A sorrend és azok szerepe nagyban hasonlít a FROM-WHERE-SELECT hármasra.
-\par Osztályok
-\par .QL nyelvben a predikátumok mellett definiálhatunk komplexebb entitásokat: osztályokat. Osztályok segítségével definiálhatunk új típusokat a FROM szekcióhoz. Az osztály „konstruktora” megadja, hogy mit várhatunk a típustól: például milyen osztálynak a leszármazottja kell, hogy legyen, vagy milyen függvényeket kell tartalmaznia. Definiálhatunk az osztályhoz olyan függvényt, amellyel megadhatjuk a keresni kívánt típusnak egy adattagját, annak típusára szintén tehetünk megszorítást.
-\par Generikus lekérdezések
+A Select rész hasonlóan az SQL-hez, kilistázza ezen osztályok csomagnevét és magának az osztálynak a nevét.
+\subsection{Predikátumok}
+\par Az elnevezett és parametrizált lekérdezéseket nevezzük predikátumoknak. Ezeket a predikátumokat felhasználhatjuk más lekérdezésekben is. A predikátumok által egyszerűen kaphatunk rendkívül komplex lekérdezéseket anélkül, hogy feláldoznánk az olvashatóságát a lekérdezésnek, hiszen megfelelő névválasztással a predikátumok absztraktabbá, tömörebbé tehetik azokat.
+\begin{verbatim}
+predicate between(RefType down, RefType between, RefType up){
+   down.hasSuperType*(between) and
+   between.hasSuperType*(up)
+}
+\end{verbatim}
+A fenti predikátum használatával megkaphatók a \textit{down} és \textit{up} típusok örökölődési hierarchiájában a köztes osztályok. Azaz, a predikátum igaza lesz, ha a \textit{down} osztály a \textit{between-nek} altípusa (leszármazottja), és az \textit{up} a \textit{between-nek} szupertípusa (őse).
+\subsection{Aggregátor függvények}
+Az SQL nyelv lehetőséget ad különböző összegek, átlagok, számlálások kiszámítására. Ezek az aggregátor függvények használata nehézkes, gyakran csak egymásba ágyazott utasításokkal értelmezhető. A .QL az Eindhoven Kvantor Jelölést használja, ami megkönnyíti az előbb említett függvények írását. Ahogyan SQL-ben, úgy .QL-ben is a SELECT utasításhoz írjuk az aggregátor függvényt. Azonban a GROUP BY utasítás nem szükséges .QL nyelvben. Az aggregátor függvény három részből áll: lokális változók, feltételek, term. Ezek a ’|’ karakterrel vannak elhatárolva és ezeket előzi meg az aggregátor függvény neve (sum, count, avg, min, max). A lokális változókat felhasználhatjuk a feltételekben, amik értelem szerűen szűrik a találatokat. A term határozza meg, hogy mely értéken szeretnénk aggregálni. A sorrend és azok szerepe nagyban hasonlít a FROM-WHERE-SELECT hármasra.
+\begin{verbatim}
+from Package p
+where p.hasName("abc.aspectj.ast")
+select sum(CompilationUnit cu |
+           cu.getPackage() = p |
+           cu.getNumberOfLines())
+\end{verbatim}
+Ezzel a lekérdezéssel és a \textit{sum} aggregátor függvény használatával megkapható az \textit{ast} csomagban található forráskód sorainak száma.
+\subsection{Osztályok}
+.QL nyelvben a predikátumok mellett meghatározhatunk komplexebb entitásokat: osztályokat. Osztályok segítségével definiálhatunk új típusokat a FROM szekcióhoz. Az osztály „konstruktora” megadja, hogy mit várhatunk a típustól: például milyen osztálynak a leszármazottja kell, hogy legyen, vagy milyen függvényeket kell tartalmaznia. Definiálhatunk az osztályhoz olyan függvényt, amellyel megadhatjuk a keresni kívánt típusnak egy adattagját, annak típusára szintén tehetünk megszorítást.
+\begin{verbatim}
+class HasIntField {
+   Field getIntField() {
+      result = this.getAField() and
+      result.getType() = int
+   }
+}
+\end{verbatim}
+Ezzel az osztállyal szűrhetők az \textit{int} típusú adattagokat tartalmazó osztályok. Ezt az osztályt alkalmazhatjuk bármely lekérdezésben.
+\subsection{Generikus lekérdezések}
 \par A .QL objektumorientált megközelítésének az előnyeihez sorolható, hogy megírt lekérdezések alkalmazhatók több projektben is. A lekérdezéseket még általánosabbá teszik a generikus lekérdezések, amiket gyorsan és könnyedén felhasználhatóvá válnak bármely kódbázishoz. Vegyük például a szoftverfejlesztésben gyakran alkalmazott tervezési mintákat (design pattern). A .QL nyelvben lehetőség van a Gyár tervezési minta leírására. A Gyár egy olyan speciális osztály, amely több típusú, de valami által összeköttetésben levő objektumokat állít elő, ezzel nagyobb rugalmasságot adva az objektumok létrehozásához. Mivel a Gyár minta nem konkrét típusokkal írja le működését, így a lekérdezés sem tartalmaz explicite típusokat. De mivel a .QL objektumorientált, ezért egy lekérdezés örökölhet és újra is definiálhat függvényeket, amikkel újrafelhasználhatóság is növekszik. Így már konkrét Gyár osztályokat kereshetünk a lekérdezéssel.
 
 \section{Program Query Language}
-\par A PQL (Program Query Language) kissé eltér a már említett lekérdező nyelvektől, abban hogy csak és kizárólag a forráskódban fellelhető minták keresésére alkalmas. Így egyszerűbben megtalálhatók programozási hibák, figyelmetlenségek, biztonsági rések, memória szivárgások. Ilyen például nem lezárt File típusú objektumok keresése, vagy akár egy adatbázis könyvtár használatakor SQL injekció támadás elleni hibák felismerése. A lekérdezés primitív események szekvenciája. Ezen események objektumokon meghívott függvényekként lehet leírni, ahogyan a Java programozási nyelv szintaxisában megszokhattuk. Rekurzív lekérdezések írására is alkalmas a PQL. Ezt elnevezett allekérdezések segítségével lehet elérni. A felhasználó definiálhat különböző típusú változókat, amiket a lekérdezésben felhasználhat. A keresésben egy változó egy objektumhoz tartozik, a deklarációs részben megadott típusának vagy annak leszármazottjának kell, hogy megfeleljen az adott objektum. 
+\par A PQL (Program Query Language) kissé eltér a már említett lekérdező nyelvektől, abban hogy csak és kizárólag a forráskódban fellelhető minták keresésére alkalmas. Így egyszerűbben megtalálhatók programozási hibák, figyelmetlenségek, biztonsági rések, memória szivárgások. Ilyen például nem lezárt File típusú objektumok keresése, vagy akár egy adatbázis könyvtár használatakor SQL injekció támadás elleni hibák felismerése. A lekérdezés primitív események szekvenciája. Ezen események objektumokon meghívott függvényekként lehet leírni, ahogyan a Java programozási nyelv szintaxisában megszokhattuk. Rekurzív lekérdezések írására is alkalmas a PQL. Ezt elnevezett allekérdezések segítségével lehet elérni. A felhasználó definiálhat különböző típusú változókat, amiket a lekérdezésben felhasználhat. A keresésben egy változó egy objektumhoz tartozik, a deklarációs részben megadott típusának vagy annak leszármazottjának kell, hogy megfeleljen az adott objektum.
+\begin{verbatim}
+query simpleSQLInjection()
+uses
+   object HttpServletRequest r;
+   object Connection c;
+   object String p;
+matches { 
+   p = r.getParameter(_); 
+}
+replace c.execute(p)
+with Util.CheckedSQL(c, p);
+\end{verbatim} 
 \par A változók reprezentálhatnak adattagokat vagy tagfüggvényeket is, amik szövegesen kell, hogy megegyezzenek a mintában. A „*” karakter helyettesít bármely hosszú karakterláncot. Ha egy adattagot talál a mintában, akkor annak előfordulása a mintában mind ugyanahhoz az objektumhoz kell tartoznia. Lehetőség nyílik a „\_” helyettesítő karaktert használni, ami a „*” karaktertől eltérően különböző objektumhoz vagy adattaghoz tartozik. Azonban, az így megtalált szimbólumokat nem lehet vizsgálni vagy visszatéríteni. A PQL lekérdező nyelv változói lehetnek argumentumok (amit egy másik lekérdezésből a jelenlegi lekérdezést meghívva kapott paraméterül), visszatérési érték (a hívó lekérdezés számára visszatérítendő változó), vagy belső változó (amik csak a lekérdezésben használhatók lokálisan).
 \par Az egyszerű parancsokat (függvényhívások) össze lehet kombinálni összetett parancsokká. Az a;b sorozat az „a” megelőzi „b”-t jelöli. Általában, ez azt is jelenti, hogy a két esemény között több esemény is előfordul – a lényeg a két egyedi eseményen alapszik, tehát a szekvenciák általában nem folytonosak. A nyelv lehetőséget kínál arra, hogy egy esemény be nem következését is lehessen definiálni: az a;~b;c jelölésben „a” megelőzi „c”-t, úgy hogy a „b” esemény a kettő között nem szerepel. Szintén, lehetőség nyílik az alternáló operátor segítségével („|” karakter) több esemény közül csak az egyik bekövetkezését meghatározni. A within kulcsszó után adható meg, hogy a mintakeresés melyik függvényben történjen.
-A Java nyelvben a fájlkezeléshez szükséges objektumokat manuálisan kell felszabadítani, különben a rendszer nem kapja vissza az erőforrást a programtól. 
+A Java nyelvben a fájlkezeléshez szükséges objektumokat manuálisan kell felszabadítani, különben a rendszer nem kapja vissza az erőforrást a programtól.
+\begin{verbatim}
+query forceClose()
+uses object InputStream in;
+within _._();
+matches {
+   in = new InputStream();
+   ~in.close();
+}
+executes in.close();
+\end{verbatim} 
 A fenti lekérdezés megtalálja az összes olyan függvényt, amelyben a megnyitott fájlokat nem zárja be a programozó. A lekérdezés akkor ad találatot, ha van egy olyan függvény, amiben van egy InputStream objektum viszont a függvény végéig bezárólag nincs meghívva az objektumon a close() tagfüggvény. Mivel nem csak az adott függvény zárhatja le az InputStream-et, hanem az abból hívott függvények is, ezért a within close()-ban a „\_” helyettesítő karakter minden függvényhívást is megvizsgál.
 \par A PQL lekérdezések gyakran átvizsgálandó vagy nem kívánt program viselkedést határoznak meg. PQL-ben két lehetőség nyílik az információ logolásra vagy javítási akció végrehajtására. A legegyszerűbb eset az executes klóz. Az ebben leírt függvény akkor fog meghívódni, amikor a keresés találatot kap. A másik mód amikor rögtön javítani szeretnénk a kódot, azáltal hogy kódot helyettesítünk, már meglévő helyére. Ez a replaces részben tehető meg: a replaces kulcsszó utáni kifejezés helyett lesz beillesztve az ezt követő with kulcsszó utáni kódrészlet.
 
@@ -121,15 +168,29 @@ A fenti lekérdezés az olyan osztályokat keresi meg, ahol az adataggok el vann
 
 \section{Java Tools Language}
 \par Ahogy azt a neve is mutatja a Java Tools Language (JTL) egy Java forráskód keresést megkönnyebbítő lekérdező nyelv. A JTL szintaxisa tömör és intuitív bármely Java nyelvben gyakorlott programozónak. Egy JTL lekérdezés sok esetben pontosan megegyezik egy Java osztály- vagy függvénydefinícióval. Ez növeli a lekérdezés olvashatóságát és nem utolsó sorban a felhasználó magától értetődően tudja JTL mintákat írni. A nyelv két fő adattípusa a Member és a Type. A Member fogalmába tartoznak az osztályok és interface-ek tagjai, beleértve a tagfüggvényeket, adattagokat, konstruktorokat, inicializálókat. A Type adattípusba a Java osztályokat, interface-eket, enum-okat és a Java nyelv primitív típusait (pl. int, float) értjük. Egy JTL program nevesített logikai predikátumok összessége.  Egyet kiválasztva a végrehajtott predikátum lesz egy lekérdezés. A predikátumnak kis betűvel kell kezdődjön, a változóknak pedig naggyal.
-\par Egyszerű minták
-\par A Java nyelv kulcsszavai visszaköszönnek a JTL nyelvben, amik ugyanazt a szemantikai jelentést hordozzák, mint amit a forráskódban a Java fordító is értelmez. Például, az int kulcsszó a Java nyelvben állhat egy függvény előtt, mint visszatérési érték, vagy adattag előtt, mint az annak típusát jelezve. A JTL nyelvben ugyanezek a szemantikai jelentésük van. A public minta minden olyan program részletet megtalál, ami publikus láthatóságú osztály vagy például publikus elérésű tagfüggvény, mező. Azonban, vannak a JTL-hez hozzáadott a Java nyelvben nem kulcsszóként ismert natív kulcsszavai. Például az anonymous Type-okra van érzelmezve, amely névtelen osztályokat keres. A JTL-nek kétféle predikátuma létezik: natív és összetett. A natív predikátumok implementációja külső a nyelvhez, azaz ha szeretnénk egy ilyen predikátumot kiértékelni, akkor azt csak külső könyvtárak segítségével tehetjük meg. Ezzel ellentétben, az összetett predikátumok definiáltak egy logikai operátorokat használó JTL kifejezés által. A vesszővel elválasztott kulcsszavak a konjugációt jelölik. Tehát a public, int mintára az összes olyan publikus függvény fog illeszkedni, aminek a visszatérési értéke int típusú (illetve természetesen az int típusú publikus adattagok is a keresés eredményébe beletartoznak). A vessző elválasztó azonban csak opcionális, elhagyása ugyanúgy konjugációt jelent. A diszjunkciót a függőleges vonallal jelezhetjük, míg a negációt a felkiáltó jellel. Következésképpen, a protected | private ekvivalens kifejezés a !public kifejezéssel. Az újrafelhasználást szem előtt tartva, ezeket a mintákat elnevezhetjük, így már csak a definiált kereső kifejezést használhatjuk. Reguláris kifejezések alkalmazása szintén támogatott a JTL nyelvben. Függvények, osztályok, adattagok nevei helyett lehet használni a reguláris kifejezéseket. A függvények paraméterlistájában lehetőség nyílik helyettesítő karakterek használatára. A ’*’ karakter nulla vagy több paraméternek felel meg, míg a ’\_’ karakter pontosan egy típust helyettesít.
-\par Változók
-\par A változók szerepe a nyelvben hasonlít a Prolog logikai programozási nyelvben használtakhoz. Például ha egy változót kétszer is használunk egy lekérdezésben, akkor annak ugyanazt a típusnevet, függvénynevet vagy osztálynevet kell jelentenie. Az alábbi lekérdezésnek olyan függvények felelnek meg, amiknek a visszatérési értékének típusa megegyezik az argumentumlistájában szereplő valamely paraméter típusával.
+\subsection{Egyszerű minták}
+\par A Java nyelv kulcsszavai visszaköszönnek a JTL nyelvben, amik ugyanazt a szemantikai jelentést hordozzák, mint amit a forráskódban a Java fordító is értelmez. Például, az int kulcsszó a Java nyelvben állhat egy függvény előtt, mint visszatérési érték, vagy adattag előtt, mint az annak típusát jelezve. A JTL nyelvben ugyanezek a szemantikai jelentésük van. A public minta minden olyan program részletet megtalál, ami publikus láthatóságú osztály vagy például publikus elérésű tagfüggvény, mező. Azonban, vannak a JTL-hez hozzáadott a Java nyelvben nem kulcsszóként ismert natív kulcsszavai. Például az anonymous Type-okra van érzelmezve, amely névtelen osztályokat keres. A JTL-nek kétféle predikátuma létezik: natív és összetett. A natív predikátumok implementációját nem tartalmazza a nyelv, azaz ha szeretnénk egy ilyen predikátumot kiértékelni, akkor azt csak külső könyvtárak segítségével tehetjük meg. Ezzel ellentétben, az összetett predikátumok definiáltak egy logikai operátorokat használó JTL kifejezés által. A vesszővel elválasztott kulcsszavak a konjugációt jelölik. 
+\begin{verbatim}
+class {
+   public int method;
+}
+\end{verbatim}
+Tehát, a public, int mintára az összes olyan publikus függvény fog illeszkedni, aminek a visszatérési értéke int típusú (illetve természetesen az int típusú publikus adattagok is a keresés eredményébe beletartoznak). A vessző elválasztó azonban csak opcionális, elhagyása szintén konjugációt jelent. A diszjunkciót a függőleges vonallal (\textpipe) jelezhetjük, míg a negációt a felkiáltó jellel. Következésképpen, a !public ekvivalens kifejezés a protected \textpipe private  kifejezéssel. Az újrafelhasználást szem előtt tartva, ezeket a mintákat elnevezhetjük, így már csak a definiált kereső kifejezést használhatjuk. Reguláris kifejezések alkalmazása szintén támogatott a JTL nyelvben. Függvények, osztályok, adattagok nevei helyett lehet használni a reguláris kifejezéseket. A függvények paraméterlistájában lehetőség nyílik helyettesítő karakterek használatára. A ’*’ karakter nulla vagy több paraméternek felel meg, míg a ’\_’ karakter pontosan egy típust helyettesít.
+\subsection{Változók}
+A változók szerepe a nyelvben hasonlít a Prolog logikai programozási nyelvben használtakhoz. Például ha egy változót kétszer is használunk egy lekérdezésben, akkor annak ugyanazt a típusnevet, függvénynevet vagy osztálynevet kell jelentenie. Az alábbi lekérdezésnek olyan függvények felelnek meg, amiknek a visszatérési értékének típusa megegyezik az argumentumlistájában szereplő valamely paraméter típusával.
 \begin{verbatim}
 return_arg := RetType (*, RetType, *);
 \end{verbatim}
 \par A változók használatának másik területe a predikátumokhoz köthető. A JTL több saját predikátumot definiál, aminek nagy része Java nyelvbeli kulcsszavak. Ilyen az implements[I] predikátum, ami egy Interface típust vár, és visszaadja az összes osztályt, ami implementálja azt. Minden predikátum tartalmaz egy rejtett paramétert, a „vevője” a mintának, amit a This vagy ’\#’ karakterrel lehet hivatkozni. A natív JTL predikátumok közé tartozik többek között: members[M] (igaz, ha M This-nek adattagja, akár definiált, akár örökölt), overriding[M] (igaz, ha This egy olyan függvény, ami felüldefiniálja M-et).
-A programozó írhat saját predikátumot is különböző paraméterekkel. Ahogy az a logikai programozásban is lenni szokott, a predikátumok paraméterei nem mások, mint külsőleg elérhető változók. Az alábbi predikátum például egy paramétert fogad. Amikor egy bizonyos értékkel lesz meghívva, akkor az argumentumnak megfelelő típusú statikus adattagok fognak megfelelni a keresésnek.
+\begin{verbatim}
+container[C] := C.members[This]
+\end{verbatim}
+\par A container egy olyan JTL által alapértelmezett egyváltozós predikátum, ami akkor teljesül, ha egy osztálynak van a C paraméterű adattagja.
+\par A programozó írhat saját predikátumot is különböző paraméterekkel. Ahogy az a logikai programozásban is lenni szokott, a predikátumok paraméterei nem mások, mint külsőleg elérhető változók. Az alábbi predikátum például egy paramétert fogad. Amikor egy bizonyos értékkel lesz meghívva, akkor az argumentumnak megfelelő típusú statikus adattagok fognak megfelelni a keresésnek.
+\begin{verbatim}
+copty_ctor := constructor(T), T.members[This]
+\end{verbatim}
+A C++ nyelvben egy objektum másolását a másoló konstruktor (copy constructor) végzi. A JTL által ezt a fentebbi lekérdezés szerint írható le. Tehát, egy osztálynak akkor van másoló konstruktora, ha létezik olyan konstruktora, amely egy a ugyanazon típusú objektumot vár paraméterként.
 
 \section{Összehasonlítás}
 \par A vizsgált lekérdező nyelvek közül három logikai programozáson alapul (jQuery, SOUL, JTL), kettő objektum-orientált megközelítést alkalmaz (PQL, .QL). A kódmegértés oka lehet forrás kód refaktorálás. Ez az a folyamat, amikor úgy változtatjuk meg a már meglévő forráskódot, új struktúrát adva, hogy közben a program viselkedése a külső szemlélő számára nem változik meg. Refaktorálás általánosan két esetben szokás alkalmazni: új funkció bevezetésénél (ha a jelenlegi kód nem alkalmas az új implementálásra, vagy megkönnyíti azt), illetve ha bug javítása ezt kívánja meg. Az utóbbi művelethez csak a PQL nyújt lehetőséget, ami szintén a programozó munkáját segíti, hiszen a nyelv alkalmazásával automatikusan lehet az adott hibákat felkutatni és kijavítani.
