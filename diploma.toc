@@ -13,4 +13,14 @@
 \select@language {magyar} \contentsline {subsection}{\numberline {2.5.1}Egyszer\IeC {\H u} mint\IeC {\'a}k}{8}
 \select@language {magyar} \contentsline {subsection}{\numberline {2.5.2}V\IeC {\'a}ltoz\IeC {\'o}k}{9}
 \select@language {magyar} \contentsline {section}{\numberline {2.6}\IeC {\"O}sszehasonl\IeC {\'\i }t\IeC {\'a}s}{10}
-\select@language {magyar} \contentsline {chapter}{\numberline {3}Konkl\IeC {\'u}zi\IeC {\'o}}{12}
+\select@language {magyar} \contentsline {chapter}{\numberline {3}Compass Query Language}{12}
+\select@language {magyar} \contentsline {section}{\numberline {3.1}Szintaktika}{12}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.1.1}JavaScript Object Notation}{12}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.1.2}CQL szintaktika}{13}
+\select@language {magyar} \contentsline {subsubsection}{Entit\IeC {\'a}sok}{13}
+\select@language {magyar} \contentsline {paragraph}{V\IeC {\'a}ltoz\IeC {\'o}}{14}
+\select@language {magyar} \contentsline {paragraph}{F\IeC {\"u}ggv\IeC {\'e}ny}{14}
+\select@language {magyar} \contentsline {paragraph}{Oszt\IeC {\'a}ly}{15}
+\select@language {magyar} \contentsline {paragraph}{Utas\IeC {\'\i }t\IeC {\'a}s}{15}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.1.3}Predik\IeC {\'a}tumok}{16}
+\select@language {magyar} \contentsline {chapter}{\numberline {4}Konkl\IeC {\'u}zi\IeC {\'o}}{17}
