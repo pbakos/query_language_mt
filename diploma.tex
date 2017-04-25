@@ -269,8 +269,21 @@ Az osztályok különböznek az eddig említett entitásoktól. Egy osztályt re
 \paragraph{Utasítás}
 Az előző három entitástól teljesen különböző az utasítás. Egy program viselkedésének vizsgálatát legjobban az utasításainak megfigyelésével lehet megtenni. Ehhez szükséges a program absztrakt szintaxis fájának, AST-jének (Abstract Syntax Tree) a megléte. Ezzel megkapjuk a program összes utasítását, azok hívásait, milyen típusokkal, változókkal, függvényekkel működtek együtt, vagy hivatkoztak rájuk. Utasítást nem nevesítünk, így névvel nem is lehet hivatkozni egy ilyen elemre (nem is lenne értelme). Ezzel szemben viszont a típusára rákereshetünk: például ciklusra vagy elágazásra keresünk. Persze lehetséges ennél speciálisabb feltételt is megadni, mint például csak olyan \textit{for} ciklus érdekel, amiben implicit konverzió történik az inicializáló részben definiált ciklusváltozóhoz. Mivel az utasítás nagyon általános megközelítés (ami lehet elágazás vagy visszatérés egy értékkel), nem lehet közös attribútumokat kitalálni rá. Ezért egyetlen tulajdonság, amik az attribútumok között szerepel az a típus (pl. switch, for, return).
 \subsubsection{Predikátumok}
-
-
+Az olvashatóság és újrafelhasználhatóság érdekében a nyelvnek tartalmaznia kell nevesített allekérdezéseket. Ezen felül léteznek olyan tulajdonságok, amiket nem lehet kifejezni a CQL-ben levő attribútumokkal. Tegyük fel, hogy a forráskódban olyan osztályokat szeretnénk megkeresni, amiknek nincs egy bizonyos szignatúrájú függvénye. A lekérdezések eddig csak létezésre voltak alkalmazhatók, de jogos elvárás a felhasználótól, hogy ennek az ellentettjét is definiálni lehessen. A nyelv ezen részeit nevezzük predikátumnak. Tehát, a predikátumnak két típusa lehet: allekérdezés vagy natív (attribútumokkal nem definiálható) predikátum. A lekérdező nyelvben a predikátum eljárásként funkcionál. Következésképpen, paraméterek adhatók meg nekik. A formális argumentumok típus nélküliek, egyszerű karaktersorozatok. Az aktuális paraméter hasonlóan csak karakterlánc.
+\par Minden predikátum a '@' jellel kezdődik, utána következik a neve. A '@' karakter emberi szemmel is jól elkülöníti az attribútumoktól. 
+\par Az allekérdezések szintaktikája a már említett '@' jellel kezdődnek, ezután következik a név, majd a formális argumentumlista gömböjű zárójelek között ('(', ')')
+. Ez megadja a predikátum szignatúráját. A szignatúra után a ":=" (legyen operátor) következik, amit egy lekérdezés követ. Ez utóbbi lesz a predikátum definíciója. A gyakran használatos kifejezésekre minden programozási nyelvnek létezik sztenderd könyvtára. Ezek az általános fogalmak, eljárások a CQL-ben is megtalálhatók. Egy ilyen példa erre a C++ nyelvből ismert másoló konstruktor. A másoló konstruktor egy olyan konstruktor, ami egy másik ugyanolyan típusú objektumot vár paraméterül, mint amilyen objektumot konstruálni szeretnénk. Azaz, ahogy azt a neve is mutatja, egy meglővé objektumnak a másolatát hozzuk létre.
+\begin{verbatim}
+//Másoló konstruktor predikátum definíció
+copy_ctor(T) := function {
+   class: class { name: T }
+   name: T
+   arguments: [const T&]
+}
+\end{verbatim}
+\par A fentebb látható másoló konstruktor predikátum egy olyan függvény lekérdezés, aminek egy paramétere van (a T típus, aminek a másoló konstruktorát akarjuk megkapni), és három attribútumára lett téve megszorítás. Az attribútumok között megtalálható a \textit{class}, amivel leszűrjük azokat a függvényeket, amelyek egy olyan osztálynak a tagfüggvénye, aminek a neve a paraméterben megadott T típus. A függvény nevére is teszünk megszorítást, ezzel megkapjuk a konstruktorokat, hiszen az osztály nevével megegyező függvények csak konstruktorok lehetnek. Az utolsó attribútummal tovább specializáljuk a függvényt: az argumentumlistának egy elemet adunk meg, egy konstans referenciájú T típust.
+\par A másik része a predikátumoknak a natív, attribútumokkal nem kifejezhető szűrési feltételek megadása. A nyelv bővítményének is felfoghatók, amivel nyelvspecifikusan lehet további megszorításokat elérhetővé tenni a felhasználó számára. Ilyenek például a C++ nyelvben függvényekhez használt \textit{const} vagy \textit{virtual} kulcsszó. Ezek a predikátumokat értelem szerűen csak függvények lekérdezésében alkalmazhatók.
+\par Ezen felül olyan predikátumok is ide tartoznak, amelyek nem szigorúan az entitásokhoz köthető tulajdonságok. Nagyon jó példa erre a változóknál található. Egy változó hivatkozásánál általában sokkal fontosabb, hogy mikor íródik az adott változó, és az olvasás csak mellékes. Mindkét esetre (írás, olvasás) a nyelvnek beépített predikátuma létezik.
 \chapter{Konklúzió}
 
 \begin{thebibliography}{99}
