@@ -256,18 +256,61 @@ A lekérdező nyelv szintaktikáját a JSON formátumra alapoztam. A választás
 A JSON objektumok névtelenek, csak a struktúra alapján lehet megmondani a típusukat. Egy lekérdező nyelvben viszont meg kell tudni mondani, hogy a programozó mire szeretne keresni (függvény, osztály, változó, stb.). Ezért CQL nyelvben entitásokat tartalmaz, amivel explicit meg lehet adni, hogy mely forráskódbeli egységekben történjen a keresés. Az entitások meghatározásánál az objektum orientált paradigma részei játszottak szerepet. Az objektum orientáltság fő komponense az osztály. Az osztályt példányosítva kapjuk meg az objektumokat. Az osztály megadja, hogy az abból példányosított objektumoknak milyen szerkezetük van (adattagok), és milyen műveletek (tagfüggvények) végezhetők el rajtuk. Következésképpen, az osztálynak szerepelnie kell a lekérdező nyelvben. Természetesen az osztályt képező elemeket is tartalmaznia kell a nyelvnek, hiszen a kereséshez szükséges szűrőfeltételek ezek alapján is megadhatóak. Tehát, (tag)függvények és az adattagok is részét képezik az entitásoknak. Az adattagok lehetnek más objektumok is (nem csak primitív típusok, mint például az \textit{int} vagy \textit{bool}), ezért érdemes a változókkal együtt kezelni. Az objektum orientált paradigmától eltávolodva egy program viselkedését az absztrakt szintaxis fa írja le. Ennek elemeit szintén lekérdezhetővé lehet tenni, amely elemek különböző utasítások lehetnek.
 \par Minden entitás attribútumokkal rendelkezik. A JSON formátumhoz hasonlóan az attribútum egy név és érték párból tevődik össze. Minden entitás definiál különböző attribútumokat, amik szűrőfeltételeknek felelnek meg. Egy entitás a nevével kezdődik, majd kapcsos zárójelek között szerepelnek az attribútumai. Az attribútumok megadása opcionális. Tételezzük fel, hogy olyan függvényeket keresünk, aminek \textit{int} típusú visszatérési értékkel rendelkezik, de a függvény nevét nem tudjuk. Ekkor, mivel a név attribútum nem kötelező, ezért arra nem is teszünk megszorítást, annak kiírása elhagyható. Ahogy a JSON formátum is megengedi az összetett objektumok beágyazását, úgy a CQL-ben is lehetőség van olyan attribútumokat definiálni, melyek értékének típusa lehet például osztály vagy változó. Erre lehet tekinteni úgy is, mint egy allekérdezés. 
 \paragraph{Változó}
-Egy lekérdezésben a változó entitást a \textit{variable} kulcsszóval kezdődik. Jelölhet például egy egyszerű változót egy függvényen belül, vagy akár lehet adattagja is egy osztálynak, objektumnak. Az attribútumok között egyértelműen szerepel a név és a névtér. Egy változó meghatározó jellemzője a típusa, ezért szűrő feltételt erre is lehet meghatározni. Ha egy osztály adattagjáról beszélünk, akkor azt a \textit{class} attribútum segítségével adható meg. Itt (is) jön előtérbe, hogy az attribútumok értéke lehet egy másik entitás (azaz egy összetett objektum). 
+Egy lekérdezésben a változó entitást a \textit{variable} kulcsszóval kezdődik. Jelölhet például egy egyszerű változót egy függvényen belül, vagy akár lehet adattagja is egy osztálynak, objektumnak. Az attribútumok között egyértelműen szerepel a név és a névtér. Egy változó meghatározó jellemzője a típusa, ezért szűrő feltételt erre is lehet meghatározni. Ha egy osztály adattagjáról beszélünk, akkor azt a \textit{class} attribútum segítségével adható meg. Itt (is) jön előtérbe, hogy az attribútumok értéke lehet egy másik entitás (azaz egy összetett objektum).
+\begin{center}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Név & Típus & Leírás \\ \hline
+		name & String & Változó neve. \\ \hline
+		namespace & String & Változó melyik névtérben található. \\ \hline
+		type & String & Változó típusa. \\ \hline
+		class & Osztály & A változó melyik osztálynak az adattagja. \\ \hline
+	\end{tabular}
+\end{center}
 \paragraph{Függvény}
 A másik entitás, amik az osztály szerves részét képezik, azok a tagfüggvények. Mivel egy program függvények hívásából áll, ezért ennek a komponensnek a vizsgálata elsőrangú szerepet játszott a lekérdező nyelv megalkotásakor. Egy függvény neve mellett a szignatúrája az, ami meghatározza. Ennek megfelelően egy keresés szűrőfeltétele lehet a visszatérési érték típusa vagy a paraméterlistája. A paraméterlista jól illeszkedik a JSON formátumban ismert tömb típusra. A típusokat a nyitó- és zárójelek közé tesszük ('[', ']' ). Előállhat olyan eset, hogy valamely paraméterre nem vagyunk kíváncsiak, vagy csak nem ismerjük. Az ilyen problémák megoldására használatos speciális karakterek, reguláris kifejezésekhez. Az egy paramétert kiváltó karakter a '\_', a többet '?'. Az általánosan használt '*' karakter a C/C++ programozási nyelvekben a pointer-t jelenti, ezért esett a választás a kérdőjelre. Így olyan kifejezések is kereshetők, mint például a második paramétere a függvénynek legyen \textit{int}. A paraméterlistához tartozik még, annak számossága, amire szintén lehet hivatkozni az \textit{argumentCount} attribútummal.
 \par A változóhoz hasonlóan, a függvénynek is megadható, hogy mely osztály tagját képezi. Ehhez kapcsolódóan az elérési szintjét is meg lehet adni: \textit{private}, \textit{protected} vagy \textit{public}.
 \par Egy programban való eligazodást nagyban nehezíti a függvények hívása, ami hosszú hívási láncot is eredményezhet. Tehát, fontos, hogy függvényen belül milyen más eljárások hívódnak. Ennek az inverze is rendkívüli fontossággal bír: egy függvényt a forráskódban hol hívnak. Mindkét attribútum értéke egyben allekérdezés is egy függvényre, így a programozónak még több lehetősége van testre szabni a keresett eljárást.
+\begin{center}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Név & Típus & Leírás \\ \hline
+		name & String & Függvény neve. \\ \hline
+		namespace & String & Függvény melyik névtérben található. \\ \hline
+		class & Osztály & A változó melyik osztálynak az adattagja. \\ \hline
+		return & String & Visszatérési érték típusa. \\ \hline
+		arguments & Lista & A függvény paraméterlistája. \\ \hline
+		argumentCount & Szám & A függvény paramétereinek száma. \\ \hline
+		access & String & Tagfüggvény esetén annak elérési szintje. \\ \hline
+		call & Függvény & A függvény mely függvényt hívja. \\ \hline
+		callFrom & Függvény & A függvény mely függvényből hívódik. \\ \hline
+	\end{tabular}
+\end{center}
 \paragraph{Osztály}
 Az osztályok különböznek az eddig említett entitásoktól. Egy osztályt reprezentáló objektum a CQL-ben nem csak attribútumokat tartalmazhat, hanem tagfüggvényeket és adattagokat. A JSON szintaktikája természetesen lehetővé tenné, hogy ezek szintén attribútumokként legyenek kezelve. A megvalósítást tömbök alkalmazásával lehet elérni. Azonban az olvashatóság megőrzése és az egyszerűség érdekében az osztályokba be lehet ágyazni függvény és változó lekérdezéseket. A lekérdezésből egyből látszik, hogy egy osztályon belül definiált függvények vagy változók az osztály részei. Tehát az attribútumok használata feleslegessé válna. Adattagokból és tagfüggvényekből természetesen bármennyit lehet definiálni (vagy akár egyet sem). Minden függvény vagy változó az osztálynak egy tagjára tesz megszorítást. Tehát, ha a felhasználó olyan osztályokat keres, aminek van f nevű függvénye, akkor az lekérdező osztály objektumon belül definiál egy ennek megfelelő függvény lekérdezést.
 \par Az alapvető név és névtér attribútumokon kívül egy osztálynak lehet \textit{inherit} tulajdonsága. Objektum orientált programozásban az újrafelhasználhatóság használatának egyik eszköze az öröklődés. Emiatt is fontos, hogy olyan attribútum is legyen, amivel szűrőfeltételnek megadható az őse. Magától értetődően ez az attribútum egy osztály allekérdezés, ahogyan a függvény lekérdezésnél a hívási tulajdonság, úgy itt is a testre szabhatóság miatt nem csak névre lehet szűrni, hanem egyéb attribútumokra is.
 \par Az öröklődéshez kapcsolódik, de használatát tekintve elkülönítjük. Ez az interface osztályból való származtatás. Az interface (vagy absztrakt osztály) olyan osztály, amit nem lehet példányosítani. Általában egy felületet biztosít és tagfüggvényeit csak deklarálja, nem definiálja. Ha egy osztály őse egy interface és annak összes absztrakt tagfüggvényét definiálja, akkor az osztály implementálja az interface-t. Ennek a speciális öröklődés is lehet kereséskor egy feltétel a felhasználó részéről, amit szintén egy osztályra való allekkérdezéssel lehet megoldani.
 \par Az osztályok újrafelhasználhatóságának egy másik formája a generikus programozás. Lényege, hogy az osztályokat felparaméterezhetjük típusokkal, így még általánosítva a létrehozható objektumokat. Habár napjainkban a programozási nyelvek segítségével lehetőség van megszorításokat tenni a típusparaméterre, például C++ nyelvben ez csak a C++17-es szabványtól alkalmazható (concept-ek). A lekérdező nyelv által megadható a \textit{template} attribútum, amivel megszorítás tehető a típusparaméterre. Ezzel olyan specializált osztályok kereshetők, amivel már konkrét típussal van paraméterezve, ezért példányosítható is.
+\begin{center}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Név & Típus & Leírás \\ \hline
+		name & String & Osztály neve. \\ \hline
+		namespace & String & Osztály melyik névtérben található. \\ \hline
+		inherit & Osztály & Milyen osztályból öröklődik. \\ \hline
+		implement & Osztály & Melyik osztályt valósítja meg. \\ \hline
+		template & Osztály & Az típusparaméterrel rendelkező osztály paramétere. \\ \hline
+	\end{tabular}
+\end{center}
 \paragraph{Utasítás}
 Az előző három entitástól teljesen különböző az utasítás. Egy program viselkedésének vizsgálatát legjobban az utasításainak megfigyelésével lehet megtenni. Ehhez szükséges a program absztrakt szintaxis fájának, AST-jének (Abstract Syntax Tree) a megléte. Ezzel megkapjuk a program összes utasítását, azok hívásait, milyen típusokkal, változókkal, függvényekkel működtek együtt, vagy hivatkoztak rájuk. Utasítást nem nevesítünk, így névvel nem is lehet hivatkozni egy ilyen elemre (nem is lenne értelme). Ezzel szemben viszont a típusára rákereshetünk: például ciklusra vagy elágazásra keresünk. Persze lehetséges ennél speciálisabb feltételt is megadni, mint például csak olyan \textit{for} ciklus érdekel, amiben implicit konverzió történik az inicializáló részben definiált ciklusváltozóhoz. Mivel az utasítás nagyon általános megközelítés (ami lehet elágazás vagy visszatérés egy értékkel), nem lehet közös attribútumokat kitalálni rá. Ezért egyetlen tulajdonság, amik az attribútumok között szerepel az a típus (pl. switch, for, return).
+\begin{center}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Név & Típus & Leírás \\ \hline
+		type & String & Az utasítást reprezentáló típus. \\ \hline
+	\end{tabular}
+\end{center}
 \subsubsection{Predikátumok}
 Az olvashatóság és újrafelhasználhatóság érdekében a nyelvnek tartalmaznia kell nevesített allekérdezéseket. Ezen felül léteznek olyan tulajdonságok, amiket nem lehet kifejezni a CQL-ben levő attribútumokkal. Tegyük fel, hogy a forráskódban olyan osztályokat szeretnénk megkeresni, amiknek nincs egy bizonyos szignatúrájú függvénye. A lekérdezések eddig csak létezésre voltak alkalmazhatók, de jogos elvárás a felhasználótól, hogy ennek az ellentettjét is definiálni lehessen. A nyelv ezen részeit nevezzük predikátumnak. Tehát, a predikátumnak két típusa lehet: allekérdezés vagy natív (attribútumokkal nem definiálható) predikátum. A lekérdező nyelvben a predikátum eljárásként funkcionál. Következésképpen, paraméterek adhatók meg nekik. A formális argumentumok típus nélküliek, egyszerű karaktersorozatok. Az aktuális paraméter hasonlóan csak karakterlánc.
 \par Minden predikátum a '@' jellel kezdődik, utána következik a neve. A '@' karakter emberi szemmel is jól elkülöníti az attribútumoktól. 
