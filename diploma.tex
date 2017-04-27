@@ -221,6 +221,25 @@ public f(*)
 A PQL nyelv fejlesztésekor az alapvető programozási hibák és bugok feltárása volt a cél. Ezt úgy érték el, hogy program végrehajtási gráfján lehet keresni, így csak függvényhívás helye határozható meg. Következésképpen, PQL-lel nem lehet kilistázni a forráskódban fellelhető f nevű függvényeket, csak annak hívásait.
 
 \chapter{Compass Query Language}
+\section{Nyelv tervezés és fejlődés}
+A lekérdező nyelv tervezésekor elsődleges célok között voltak a nyelvfüggetlenség, könnyű olvashatóság és a magas kifejező erő. A nyelv fejlesztése a való életből vett példák leírásával történt. Ezek olyan lekérdezések, amelyek egy szoftver fejlesztőnek rögtön eszébe jutna, ha új projektre, modul fejlesztésére kerül. Ezen felül olyan általános és összetett vagy komplex lekérdezések kerültek a példákba, amik segítik a lekérdező nyelv definiálását: például allekérdezések, attribútumok meghatározása. A tíz példa kérdés használatával már körvonalazódik a nyelv. Egyesével vizsgálva őket, de egy bizonyos egységet megtartva a lekérdezések között, néhány meggondolással a kialakítható a nyelv.
+\subsection{Függvény lekérdezés szignatúra szerint}
+\textbf{Lekérdezés: Határozzuk meg az összes \textit{void} visszatérési értékű függvényeket, amelyek második paramétere \textit{int} típusú.}
+\\
+A legalapvetőbb kérdések egyike függvények megkeresése annak szignatúrája alapján. Egy függvény szignatúrájának három része van: visszatérési érték, név, paraméterlista. Az előbbi kettő egyértelműen egyszerű értékek, karakterláncok. A paraméterlista, ahogy a neve is mutatja egy listának kell lenni. 
+\par Egy lista megkülönböztetésére egy egyszerű szövegtől a négyzetes zárójelek alkalmazandók. A listában való elemek elkülönítésére a vessző karaktert kell használni. Elképzelhető, hogy a lista nem minden elemét ismeri a programozó, vagy egyszerűen csak nem releváns információval bír az adott paraméter. Az ilyen problémák megoldására lehet használni reguláris kifejezéseket. Fontos, hogy könnyen lehessen csak egy vagy több argumentumot helyettesíteni. Ennek érdekében két helyettesítő karakter kerül bevezetésre: '\_' és a '?' karakterek. Az előbbi egy argumentum kiváltására szolgál, míg utóbbival nulla vagy több paramétert van lehetőség pótolni. Az akárhány karakter helyettesítésére általában a '*' karaktert szokták definiálni. A nyelv esetében azonban problémás lehet, ha C/C++ nyelveket vesszük figyelembe, hiszen ezekben a programozási nyelvekben a mutatók típusát a csillag karakter jelöli. Annak érdekében, hogy a lekérdező nyelv független maradjon a programozási nyelvektől, a kérdőjelre esett a választás, mivel a kérdőjel nem szerepel típus nevében egyetlen széles körben használt nyelvben sem.
+\par A reguláris kifejezés használatával már egyszerűen megadható a példában keresendő függvények definíciója. A lekérdezésnek három része van: függvényt keresünk, visszatérési értéke \textit{void}, második paramétere \textit{int}.
+\begin{verbatim}
+function {
+   return: void
+   arguments: [_, int, ?]
+}
+\end{verbatim}
+\par Először jelezzük, hogy a függvényeket vizsgáljuk. Visszatérési értéknek (\textit{return:}) megadjuk a \textit{void} szót. A második paraméter legyen int típusú kifejezéssel ekvivalens az első paramétert nem ismerjük, második legyen \textit{int}, és utána következhet akármennyi (akár nulla) argumentum is. Ezzel az ekvivalens állítással kapjuk a fenti paraméterlistát (\textit{arguments:}).
+\subsection{Változó olvasás/írás}
+\textbf{Lekérdezés: Határozzuk meg egy változó írását/olvasását.}
+\\
+
 \section{Szintaktika}
 Felhasználói szempontból egy új nyelv megtanulása mindig visszatartó erő lehet a nyelv elsajátítására. Ezért egy olyan lekérdező nyelv megalkotása volt a célom, amelyet könnyű elsajátítani, megtanulni, intuitív kezelni és nyelvfüggetlen. Az előző fejezetben vizsgált lekérdező nyelvek közül volt olyan, ami ezt úgy kívánta elérni, hogy minden programozó által ismert nyelv szintaktikájára alapoz (SQL). A Java Tools Language a Java nyelvhez igazította a szintaktikáját, megkönnyítve ezzel az abban dolgozókat. Azonban, az így megalkotott nyelv elveszti nyelvfüggetlenségét. A két szempontot szem előtt tartva (létező nyelvre alapozni és nyelvfüggetlen maradni) a JavaScript nyelvhez kifejlesztett, de azóta több nyelvben is alkalmazott JavaScript Object Notation.
 \subsection{JavaScript Object Notation}
