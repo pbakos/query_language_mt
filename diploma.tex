@@ -235,13 +235,202 @@ function {
    arguments: [_, int, ?]
 }
 \end{verbatim}
-\par Először jelezzük, hogy a függvényeket vizsgáljuk. Visszatérési értéknek (\textit{return:}) megadjuk a \textit{void} szót. A második paraméter legyen int típusú kifejezéssel ekvivalens az első paramétert nem ismerjük, második legyen \textit{int}, és utána következhet akármennyi (akár nulla) argumentum is. Ezzel az ekvivalens állítással kapjuk a fenti paraméterlistát (\textit{arguments:}).
+\par Először jelezzük, hogy a függvényeket vizsgáljuk. Visszatérési értéknek (\textit{return:}) megadjuk a \textit{void} szót. A második paraméter legyen \textit{int} típusú kifejezéssel ekvivalens az első paramétert nem ismerjük, második legyen \textit{int}, és utána következhet akármennyi (akár nulla) argumentum is. Ezzel az ekvivalens állítással kapjuk a fenti paraméterlistát (\textit{arguments:}).
 \subsection{Változó olvasás/írás}
 \textbf{Lekérdezés: Határozzuk meg egy változó írását/olvasását.}
 \\
+Egy hosszú (sok sornyi forráskódból álló) függvény esetében a programozó számára jelentős problémát okozhat a függvényben használt változók értékének módosítása, olvasása. A szoftverfejlesztésben alkalmazott eszközök általában ezt a két referálást egységesen kezelik, azaz a programozó nem képes csak értékadás vagy csak érték kiolvasás helyére keresni. 
+\par Tegyük fel, hogy van egy változónk, amit rengetegszer használunk a kódban, de ezek közül csak elenyészően kevésszer kap új értéket. Ha a változó neve nem elég intuitív ahhoz, hogy megértsük pontosan milyen adatot tárol, akkor legegyszerűbb kideríteni, hogy értékadáskor a jobb oldalon milyen kifejezés szerepel. A csak olvasásra való keresés szintén fontos. Ha egy változót a függvény elején inicializálunk, de csak később használjuk fel (ami természetesen egy nagyon rossz programozói gyakorlat), akkor elég csak azokra a változó hivatkozásokra keresnünk, amelyek a változót nem írják. Hasonló a helyzet adattagok inicializásánál. Tegyük fel, hogy egy adattagot az osztály konstruktorában inicializálunk. Szeretnénk megtalálni azokat a hivatkozásokat a forráskódban, amikor ezt az adattagot felhasználjuk.
+\par A változók kezelésére egy új entitást kell bevezetni a nyelvbe. Ez lesz a \textit{variable}. Tételezzük fel, hogy a keresni kívánt változó nevét \textit{v}-nek hívjuk. Ennek a változónak azon hivatkozásait keressük a forráskódban, ahol új értéket kap.
+\begin{verbatim}
+//Változó olvasása
+variable {
+   name: v
+   @write
+}
 
+//Változó írása
+variable {
+   name: v
+   @read
+}
+\end{verbatim}
+\par A lekérdezéshez új nyelvi elemmel egészítjük ki a CQL-t: predikátumokkal. Egy predikátum a '@' karakterrel kezdődik, majd ez után következik a neve. Felfogható olyan attribútumnak is, aminek logikai értékű. Azonban egy attribútumról a felhasználó azt gondolhatja (teljesen jogosan), hogy az szorosan kapcsolódik az azt egységbe záró entitáshoz. Egy változó írása vagy olvasása nem része, "tartozéka", tulajdonsága az entitásnak. Ebből a megfontolásból egy változó írása/olvasása nem attribútuma az entitásnak, hanem létezik egy predikátum, ami megszorítja a forráskódban fellelhető változó előfordulásának találatait. Ezeket a predikátumokat a nyelv előre definiálja.
+\subsection{Származtatott osztály lekérdezés}
+\textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyek egy absztrakt osztályból (interface-ből) származnak/implementálnak.}
+\\
+Az osztályok és az azon végrehajtott műveletek jelentősége az objektum orientált paradigmában alapvető fontosságú. Az osztály számára egy külön entitásként kell tekinteni. Az attribútumok között szerepel, hogy mely más osztályból származott. Az öröklődéssel kifejezhető olyan kapcsolatok, amivel a kód újrahasználás kivitelezhető. Az öröklődésnek egy speciális esete, amikor olyan osztályból származtatunk, amit nem lehet példányosítani (más néven interface vagy absztrakt osztályból). Az interface-ek használatával adhatunk különböző osztályoknak egy egységes felületet. Az interface nem definiálja a függvényeit (vagy nem mindet). 
+\par Egy szoftverfejlesztőnek problémát jelenthet, ha egy olyan hibát kell felderítenie, ami interface-eket használ, de a hibát valamelyik származtatott osztály okozza. Ekkor a programozónak ismernie kell ezeket az osztályokat, aminek felkutatása hasznos ismeret lehet.
+\begin{verbatim}
+class {
+   inherit: class { 
+      name: i 
+   }
+}
+\end{verbatim}
+\par A lekérdezésben az attribútum értéke egy újabb lekérdezés. Jogos elvárás lehet a felhasználótól, hogy a származtatott osztályt ne csak név alapján lehessen megadni, hanem név ismerete nélkül más attribútumokkal vagy függvények segítségével. Így a lekérdező nyelv további lehetőséget ad a keresések finomítására, ahelyett hogy korlátozná a programozót csak a név szerinti találatok megkeresésére. Ezzel definiálva lett a CQL-ben az allekérdezés. Egy allekérdezés nem különbözik egy egyszerű lekérdezéstől, amivel a nyelv komplexitása nem nő és az olvashatóság is megmarad. 
+\subsection{Tagfüggvény lekérdezés}
+\textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyeknek van olyan tagfüggvénye, aminek a visszatérési értéke \textit{string} (toString()).}
+\\
+Az osztályok tulajdonképpen függvények és adatok összessége. Ezekre már definiált entitásokat fogalmaztunk meg. Azaz az osztály attribútumai mellett megadhatók függvények és adattagok ("változók"). Ezek lehetnek attribútumok és a tagfüggvények listáját kellene meghatároznia a felhasználónak. A lista elemeinek hasonlóan az előző lekérdezésben látott allekérdezéseket kell tartalmaznia. Az olvashatóság rovására menne egy ilyen verziója a nyelvnek. Ehelyett az osztályok lekérdezésbe egyszerűen beágyazhatók függvény lekérdezések. Osztályon belül - értelem szerűen - a változó egy adattagot reprezentál.
+\begin{verbatim}
+class {
+   function {
+      name: toString
+      return: string
+      arguments: []
+   }
+}
+\end{verbatim}
+Tehát a lekérdezés egy olyan osztály után keres, amelynek létezik olyan tagfüggvénye, aminek visszatérési értéke string típusú, nincs paramétere, és a neve toString.
+\subsection{Függvény hívás meghatározása}
+\textbf{Lekérdezés: Határozzuk meg azokat a függvényeket, amelyek egy másik függvényt hívnak.}
+\\
+Egy alapvető feladat, amit minden modern integrált fejlesztői környezet támogat, az a függvény hívások meghatározása. Ez kiterjed arra hogy egy függvény milyen más eljárásokat hívott, illetve hogy azt mely függvények hívták. A kódban való eligazodásban, megértésben nagyban hozzájárul az ilyen típusú lekérdezések. Egy fejlesztői eszközben általában csak névvel ellátott függvényekre lehet keresni. A lekérdező nyelv segítségével azonban a név megadása nem kötelező, hanem más attribútumok meghatározásával is adható feltétel.
+\par  Az előbb említett szűrő megszorításokat, miszerint a függvényeket nem feltétlen név alapján lehessen lekérdezni, allekérdezéssel könnyen megvalósítható. Ahogyan az osztály örökölődésnél, úgy itt is egy beágyazott függvény lekérdezéssel adható meg a keresett eljárás. Ehhez természetesen új attribútumot kell felvenni a függvények entitáshoz.
+\begin{verbatim}
+function {
+   call: function { 
+      name: f 
+   }
+}
+
+function {
+   callFrom: function { 
+      name: f 
+   }
+}
+\end{verbatim}
+\par Az első lekérdezésben azokat a függvények találatát kapjuk, amelyek megfelelnek annak a szűrőnek, hogy egy függvény hívja az \textit{f} nevű függvényt. A második lekérdezés ezzel ellentétben, olyan függvények, amelyeket f nevű függvényből hívnak. Ahogyan eddig is az olvashatóság egyszerű és a testre szabhatóság is sok lehetőséget kínál a programozó számára.
+\subsection{Konstruktor lekérdezés}
+\textbf{Lekérdezés: Határozzuk meg az olyan osztályokat, amelyeknek van explicit másoló konstruktora.}
+\\
+Az objektumorientált paradigma egyik alapvető tagfüggvénye a konstruktor. Az összes objektum létrehozásánál ez a függvény fog lefutni, így ennek elemzése a lekérdező nyelv szempontjából rendkívül fontos. A konstruktor egy olyan tagfüggvény, aminek nincs visszatérési értéke, neve megegyezik a osztályéval. A konstruktor elég általános fogalom ahhoz, hogy predikátumként a nyelv beépített predikátuma legyen. Így a felhasználó kényelmesebben, könnyebben, egyszerűbben kérdezhet le konstruktorhoz kapcsolódó információkat. A nyelv jelenlegi elemeivel egy függvény nincs megkülönböztetve attól, hogy az osztály része-e, vagy sem. Magától értetődően a két fogalom szeparálása csak bonyolítaná a nyelvet (és nem is lenne természetes a felhasználó számára). Ezért, a függvény entitás kiegészül a \textit{class} attribútummal. Ez meghatározza, hogy ha a \textit{function} entitás egy tagfüggvényt reprezentál, akkor az melyik osztályhoz tartozik. Egy konstruktort az alábbi megszorítások alapján lehet definiálni a nyelv segítségével (akár a felhasználó is megtehetné, hogy saját definíciót ír):
+\begin{verbatim}
+ctor(T) := function {
+   class: class { name: T }
+   name: T
+}
+\end{verbatim}
+\par Látható, hogy egy predikátum definíció (hasonlóan egy függvényhez) a nevéből és a paraméterlistájából áll.
+\par A konstruktorok egy speciális fajtája a másoló konstruktor. Ennek segítségével egy objektumból elkészíthetjük annak másolatát. A C++ programozási nyelvben ennek kitüntetett szerepe van, mivel sok sztenderd algoritmus a másoló konstruktort használja az adatok tényleges mozgatása helyett (ez a C++11-es szabvánnyal megváltozott). Ezen felül, ha a programozó egy osztályhoz nem definiál másoló konstruktort, akkor a fordító generálni fog egy primitív implementációt (ami értékként fogja lemásolni az osztály adattagjait). Természetesen nem csak a C++ nyelvben, de Java-ban is definiálható másoló konstruktor, tehát nem egy nyelvspecifikus nyelvi elemről van szó. Ennek érdekében a másoló konstruktor is kap a lekérdező nyelvben alapértelmezett predikátum definíciót.
+\begin{verbatim}
+//C++ másoló konstruktor predikátum
+copy_ctor(T) := function {
+   class: class { name: T }
+   name: T
+   arguments: [const T&]
+}
+
+//A ctor predikátumot felhasználva kapjuk
+copy_ctor(T) := function {
+   @ctor(T)
+   arguments: [const T&]
+}
+\end{verbatim}
+\par A C++ implementáció szerint a paraméternek konstans referenciának kell lennie. A referenciát jelző '\&' karaktert ugyanúgy jelezzük, mint a \textit{const} kulcsszót a C++ nyelvben. 
+\subsection{Nem definiált tagfüggvény osztály lekérdezésben}
+\textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyeknek van megírt másoló konstruktora, de nincs saját egyenlőség operátora.}
+\\
+Egy osztály lekérdezésben annyi tagfüggvény definiálunk, amennyit csak akarunk, ezzel szűkítve a találatokat. Az eddigi bevezetett nyelvi elemekkel már képesnek kell lenni arra, hogy egy összetettebb lekérdezést is lehessen meghatározni.
+\par Egy újabb példa a C++ világából: azon osztályok, amelyeknek van másoló konstruktora legyen értékadó operátora (operator=) is. Ez egy bevett gyakorlat a nyelvben programozók számára. Ha a fejlesztő másoló konstruktort definiál, akkor az azt jelenti, hogy a sekély másolás nem elegendő és mély másolásra van szükség. Ilyen eset például, ha egy pointer típusú adattagja van az osztálynak és nem a pointer-t szeretnénk másolni, hanem a mutatott értéket. Ezt a másolást természetesen nem csak az objektum inicializálásakor kell elvégezni, hanem értékadás esetén is. Ezért egy jó gyakorlat, hogy ha az osztályt megíró programozó definiált másoló konstruktort, akkor definiálja az értékadó operátort is. Ennek elmulasztása súlyos hibákhoz vezethet, amelyet nem egyszerű felderíteni. Egy lekérdezéssel azonban rögtön megtalálhatók az ilyen rosszul megtervezett osztályok.
+\par CQL-ben eddig csak arra voltak példák, hogy függvények, változók, osztályok létezését vizsgálta. Ennek ellentettje is lehet fontos, ahogyan a példa is mutatja, egy olyan tagfüggvény definiálása, amilyet nem tartalmaz az osztály. Az eddigi nyelvi elemek alkalmazásával nem oldható meg a probléma, azonban a már bevezetett predikátumok használatával megmaradna az olvashatóság és egyszerűség.
+\begin{verbatim}
+class {
+   function { 
+      @copy_ctor(This) 
+   }
+   
+   function {
+      name: operator= 
+      @undefined
+   }
+}
+\end{verbatim}
+\par A lekérdezésben két új elem került be a nyelvbe. A már említett új predikátum, amivel a "nem-létezést" definiáljuk. Ez az \textit{@undefined} predikátum, ami megadja, hogy az operator= nevű tagfüggvény nem létezik. A másik elem a \textit{This} használata a másoló konstruktor tagfüggvény lekérdezésben. Mivel ennek a predikátumnak a bemenete egy típusnév, ezért Java és C++ nyelvben is használt This kulcsszóval jelezhetjük, hogy az adott osztály másoló konstruktorával foglalkozunk.
+\subsection{Adattag hivatkozás osztály lekérdezésben}
+\textbf{Lekérdezés: Határozzuk meg azokat a tagfüggvényeket, amelyek egy bizonyos adattagra hivatkoznak (írnak/olvasnak).}
+\\
+Függvények beágyazása az osztály lekérdezésekben már definiált. Az adattagokat hasonló módon kapjuk, mint a tagfüggvényeket: a már létező \textit{variable} entitást alkalmazzuk az adattag reprezentálására. Mivel a változó lekérdezés és egy adattag lekérdezés között csak annyi különbség van, hogy az egyik egy osztály része, a másik pedig nem, a két entitást érdemes egyben kezelni.
+\par Egy osztályon belüli hibakeresésnél vagy új funkciók hozzáadásánál felmerülő nehézségek között szerepel, hogy egy adattagot melyik más tagfüggvényben használjuk fel (írjuk vagy olvassuk). Például, ha egy tagfüggvény egy adattagot csak olvas, akkor érdemes ismerni, hogy értéket mely függvények hívásakor kaphat. Ezzel az információval felgyorsítható a keresés, hiszen nem kell minden tagfüggvény megnézni, ahol csak hivatkozva van az adattag.
+\par Az új funkció a nyelvben, ami ezzel a lekérdezéssel egészül ki, hogy az adattag definiálása ugyanolyan módon történik, mint a függvények esetében. Egyszerűen csak beágyazzuk az osztály lekérdezés törzsébe. Egy változó írását már definiáltuk az előző lekérdezésekben. Ekkor a változó törzsében alkalmaztuk a hozzá tartozó predikátumot. Ebben az esetben viszont nem az összes előfordulást keressük, hanem azokat a tagfüggvényeket, amelyekben az értékadás történik. Ebből kifolyólag a predikátumot nem az adattag lekérdezésben kell használni, hanem a tagfüggvény belsejében.
+\begin{verbatim}
+class {
+   name: c
+   
+   variable { name: m }
+   
+   function { 
+      name: f 
+      @read(m)
+   }
+}
+\end{verbatim}
+\par Ugyanazt a predikátumot használjuk az \textit{f} nevű függvény törzsében, mint amikor egy változóhoz kötve alkalmaztuk. Viszont a változó belsejében levő predikátum meghatározta a keresendő kifejezést, addig egy függvény lekérdezésben ezt meg kell explicit határozni. Következésképpen, a változó nevét használjuk a predikátum paraméteréül.
+\subsection{Felüldefiniált tagfüggvény lekérdezés}
+\textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyek egy másikból öröklődnek és felüldefiniálják az \textit{f} függvényüket.}
+\\
+Vannak olyan osztályok, amelyek nem absztrakt osztályok, mégis egyes függvényeiket úgy írják meg, hogy az felüldefiniálható legyen egy leszármazott osztályban. Ha ismerjük az ősosztályt és annak származtatott osztályait szeretnénk megkeresni, amelyek csak egy bizonyos függvényt definiálnak felül egy lekérdezéssel könnyen megtehetjük. Egy jellegzetes probléma szokott lenni, hogy a fejlesztő a felüldefiniálás helyett túlterhelést írja le. Természetesen a szándék a felüldefiniálás volt, de a függvény szignatúrában nem teljesen azt írta le, mint ami a ősosztály tagfüggvényében van. Például kihagyott argumentumot, vagy egy típus módosító kulcsszót hagyott le: a C++ nyelvben ilyen a referencia és érték szerinti paraméterátadás. Ha az ősosztály referencia szerint ad át egy paramétert és a leszármazottban az egy érték szerinti paraméterátadás, akkor a gyerek osztályban a függvényt nem felüldefiniálja, hanem túlterheli. Egyszerű elvéteni (hiszen csak egy karaktert '\&' kell lehagyni), a program fordul, a programozó által elvárt viselkedés mégsem történik meg. Egy lekérdezéssel azonban rögtön látszódni fog, ha a függvényt nem felüldefiniált.
+\par Az \textit{inherit} attribútum már be lett vezetve a nyelvbe. Ezt felhasználva olyan allekérdezést írhatunk, amivel nem csak névre, de olyan függvényre is megszorítást tehetünk, amivel sok szabadságot, testre szabhatóságot adunk a programozó kezébe. Tehát egy olyan osztályt keresünk, ami leszármazottja egy (tegyük fel) \textit{c} nevű osztály, aminek létezik \textit{f} nevű tagfüggvénye. Ezt az függvényt pedig a keresett osztály felüldefiniálja.
+\begin{verbatim}
+class {
+   inherit: class { 
+      name: c 	
+      function { name: f } 
+   }
+   
+   function { name: f @override }
+}
+\end{verbatim}
+A keresett függvény, ami felüldefiniálja az ősosztály függvényét egyszerű predikátummal megadható. Az olvashatóság és nyelvfüggetlenség megmarad, a nyelv komplexitása nem növekszik, hiszen predikátumokat eddig is használtunk már.
+\subsection{Örökölt osztály destruktor lekérdezéssel}
+\textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyek olyan osztályból származnak, melynek destruktora nem virtuális.}
+\\
+Ez a lekérdezés nem nyelvfüggetlen, hiszen a C++ programozási nyelvben ismert problémára utal, azaz ha egy osztály destruktora nem virtuális, akkor az osztály írója úgy tervezte meg, hogy ne legyen leszármaztatható. Ezzel természetesen nem akadályozta meg, hogy tényleges ne lehessen az osztály egy másiknak az őse. Tehát, fennáll a veszély, hogy egy programozó újrafelhasználás céljából örököltet egy olyan osztályt, ami erre nincs felkészítve. A legsúlyosabb hiba, ami egy ilyen struktúrájú osztályból eredhet az a memória szivárgás. Nehéz felderíteni, és csak azt lehet észrevenni, hogy fogy a memória, hiszen szivárgáskor az allokált memória nem szabadul fel. Ez akkor történhet, ha egy bázis osztálybeli interface-en keresztül szabadítjuk fel a leszármazott objektumot. Mivel a bázis osztály destruktora nem virtuális, ezért a fordító nem is nézi meg, hogy a leszármazott osztály destruktorát kellene meghívnia. Következésképpen, ha a gyerek osztály tartalmaz olyan adattagot, amit dinamikus tárterületen allokál, a deallokáció nem fog végrehajtódni. A program elvárt viselkedése természetesen jól fog működni, viszont teljesítményileg súlyos hibáktól szenved.
+\par A konstruktorhoz hasonlóan a destruktort is lehet alapértelmezett predikátumként definiálni, így azt nem kell mindig a felhasználónak meghatároznia.
+\begin{verbatim}
+destructor(T) := funcion {
+   class: class { name: T }
+   name : ~T
+}
+\end{verbatim}
+\par A virtuális függvények vizsgálatára egy újabb predikátumot kell bevezetni. Ezek akkor tesznek eleget a predikátumnak ha a C++ nyelv által használt \textit{virtual} kulcsszóval látják el a függvényt.
+\begin{verbatim}
+class {
+   inherit: class {
+      function { 
+         @destructor(This) 
+         NOT @virtual 
+      }
+   }
+}
+\end{verbatim}
+\par Ennél a lekérdezésnél is látszódik, hogy mekkora kifejező erővel bír, hogy nem csak névvel lehet hivatkozni az \textit{inherit} attribútumnál. Egyszerű olvasni és leírni is. A \textit{virtual} predikátumot negálni kell, hiszen azok a destruktorok érdekelnek, amelyekből hiányzik ez a tulajdonság.
+\subsection{Egyke programtervezési minta lekérdezés}
+\textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyeknek van olyan statikus függvénye, aminek visszatérési értékének a típusa maga az osztály, de azt példányosítani nem lehet (Egyke tervezési minta).}
+\\
+Egy ipari méretű szoftverben nagy mennyiségben találhatók tervezési minták. Ezek implementálására már vannak bevett szokások, így azok lekérdezése nagyban segíti a pontos találatok számát.
+\par Az egyke egy olyan objektum létrehozási minta, aminek segítségével elérhető, hogy az egyke osztályból mindig pontosan egy objektum létezzen a program futása során. Ettől a programtervezési mintára azonban sokan anti-mintaként tekintenek, amiket nem szabadna használni. Egy gyakran előforduló probléma, hogy az egyke objektumok megnövekednek egy program fejlődése során. Ez azért okoznak gondot, mert az egykére tekinthetünk úgy, mint globális változóra. Ha az ilyen típusú objektumokból túl sok van, azzal átláthatatlanná tehetjük a programunkat. A rossz tervezési hiba úgy lehet kijavítani, hogy csökkentjük az egyke osztályok számát, és csak azokat az egykéket hagyjuk meg, amelyek ténylegesen megfelelnek az egyke definíciójának (azaz olyan objektumok, amikből kötelezően csak egy objektum kell, hogy létezzen).
+\par Egy egyke implementációnak azt kell elérnie, hogy belőle csak egy objektumot lehessen példányosítani. Példányokat a konstruktor hívással történik, következésképpen a konstruktor elérését kell publikusból priváttá tenni. Így csak az osztályon belül lehet ilyen típusú objektumot létrehozni. Tehát ez egy feltétele a lekérdezésnek.
+\par Az egyke objektumot mégis el kell érni valahogy (példány nélkül), amihez megfelelő egy osztályszintű (statikus) függvény. Nem kell hozzá példánynak lennie, ahhoz hogy meg lehessen hívni. Ez a statikus függvény fogja példányosítani az egyetlen objektumot (ha még nem tette volna egy korábbi függvényhívásnál) és visszatérési értékként visszaadja azt. Ez a második feltétele a lekérdezésnek.
+\begin{verbatim}
+singleton(C) := class {
+   name: C
+   
+   function {
+      return: C
+      @static
+   }
+
+   function {
+      access: private 
+      @ctor      
+   }
+}
+\end{verbatim}
+\par Egy egyke predikátumot a fent látható módon tudjuk leírni, amiben semmilyen plusz feltétel nincs, mint amit a tervezési minta absztrakt, magas szinten definiál. A két feltételt két allekérdezésként adjuk meg, ahol van egy privát konstruktor és egy statikus függvény, aminek visszatérési értékének típusa maga az osztály. Az új \textit{static} predikátum egyértelműen egy statikus tagfüggvényre utal, míg a \textit{ctor} nevű predikátumot már definiáltuk a konstruktor lekérdezéseknél. Ha egyszerű lekérdezést szeretnénk írni (és nem predikátumot definiálni, ahogyan itt tettük), akkor a statikus függvény allekérdezésben a \textit{return} attribútum értékét a \textit{This} kulcsszóval határozzuk meg.
 \section{Szintaktika}
-Felhasználói szempontból egy új nyelv megtanulása mindig visszatartó erő lehet a nyelv elsajátítására. Ezért egy olyan lekérdező nyelv megalkotása volt a célom, amelyet könnyű elsajátítani, megtanulni, intuitív kezelni és nyelvfüggetlen. Az előző fejezetben vizsgált lekérdező nyelvek közül volt olyan, ami ezt úgy kívánta elérni, hogy minden programozó által ismert nyelv szintaktikájára alapoz (SQL). A Java Tools Language a Java nyelvhez igazította a szintaktikáját, megkönnyítve ezzel az abban dolgozókat. Azonban, az így megalkotott nyelv elveszti nyelvfüggetlenségét. A két szempontot szem előtt tartva (létező nyelvre alapozni és nyelvfüggetlen maradni) a JavaScript nyelvhez kifejlesztett, de azóta több nyelvben is alkalmazott JavaScript Object Notation.
+Felhasználói szempontból egy új nyelv megtanulása mindig visszatartó erő lehet a nyelv elsajátítására. Ezért egy olyan lekérdező nyelv megalkotása volt a célom, amelyet könnyű elsajátítani, megtanulni, intuitív kezelni és nyelvfüggetlen. Az előző fejezetben vizsgált lekérdező nyelvek közül volt olyan, ami ezt úgy kívánta elérni, hogy minden programozó által ismert nyelv szintaktikájára alapoz (SQL). A Java Tools Language a Java nyelvhez igazította a szintaktikáját, megkönnyítve ezzel az abban dolgozókat. Azonban, az így megalkotott nyelv elveszti nyelvfüggetlenségét. A két szempontot szem előtt tartva (létező nyelvre alapozni és nyelvfüggetlen maradni) a JavaScript nyelvhez kifejlesztett, de azóta több nyelvben is alkalmazott JavaScript Object Notation esett a választás.
 \subsection{JavaScript Object Notation}
 A JavaScript Object Notation (JSON) a nevében szereplő scriptnyelvből, a JavaScript-ből alakult ki \cite{json}. A JSON egy olyan objektum, ami az XML-hez képest kis méretű, adatcserére alkalmazott formátum. Az egyszerű formátumának köszönhetően programok számára könnyen parszolható és generálható és mindeközben az ember számára is megmarad olvashatóság. Ezek mellett a JSON egy szöveg alapú objektum, így programozási nyelvtől is független.
 \par A JSON objektumokat használata kiterjed kommunikációs protokollok implementálására és konfigurációs információk reprezentálására. Tulajdonképpen, bármilyen információ küldésére, fogadására alkalmas formátum.
