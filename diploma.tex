@@ -16,6 +16,8 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{tipa}
 %\DeclareGraphicsRule{*}{mps}{*}{}
+\usepackage{setspace}
+\onehalfspacing
 
 \geometry{
 	a4paper,
@@ -24,6 +26,7 @@
 	top=25mm,
 	bottom=25mm,
 	}
+
 
 \title { Lekérdező nyelv definiálása és prototípus implementálása kódmegértés céljából }
 \author { Bakos Péter }
@@ -535,6 +538,15 @@ copy_ctor(T) := function {
 \par A fentebb látható másoló konstruktor predikátum egy olyan függvény lekérdezés, aminek egy paramétere van (a T típus, aminek a másoló konstruktorát akarjuk megkapni), és három attribútumára lett téve megszorítás. Az attribútumok között megtalálható a \textit{class}, amivel leszűrjük azokat a függvényeket, amelyek egy olyan osztálynak a tagfüggvénye, aminek a neve a paraméterben megadott T típus. A függvény nevére is teszünk megszorítást, ezzel megkapjuk a konstruktorokat, hiszen az osztály nevével megegyező függvények csak konstruktorok lehetnek. Az utolsó attribútummal tovább specializáljuk a függvényt: az argumentumlistának egy elemet adunk meg, egy konstans referenciájú T típust.
 \par A másik része a predikátumoknak a natív, attribútumokkal nem kifejezhető szűrési feltételek megadása. A nyelv bővítményének is felfoghatók, amivel nyelvspecifikusan lehet további megszorításokat elérhetővé tenni a felhasználó számára. Ilyenek például a C++ nyelvben függvényekhez használt \textit{const} vagy \textit{virtual} kulcsszó. Ezek a predikátumokat értelem szerűen csak függvények lekérdezésében alkalmazhatók.
 \par Ezen felül olyan predikátumok is ide tartoznak, amelyek nem szigorúan az entitásokhoz köthető tulajdonságok. Nagyon jó példa erre a változóknál található. Egy változó hivatkozásánál általában sokkal fontosabb, hogy mikor íródik az adott változó, és az olvasás csak mellékes. Mindkét esetre (írás, olvasás) a nyelvnek beépített predikátuma létezik.
+\subsubsection{Reguláris kifejezések}
+Nem várható el a felhasználótól, hogy minden típust, változó vagy függvény nevet pontosan tudjon, ismerjen. Egy projekt kódolási konvenció viszont nagyban hozzájárulnak a kódbázisban való navigálásban. Tehát nem csak akkor veszi hasznát egy részletnek a programozó, ha csak emlékei vannak a keresett entitásról, hanem akkor is, ha nevezési konvenciókat alkalmaznak a projekten. Ilyen részletek definiálásához reguláris kifejezéseket használata ajánlott.
+\par A lista típus definiálásánál már előkerültek a reguláris kifejezések. Hasonlóan az ott említett probléma jelentkezik egyszerű szöveg értéknél. Gondoljuk bele, hogy például egy függvény visszatérési értékének szeretne a programozó reguláris kifejezést megadni. Ekkor a sokak által használt POSIX reguláris kifejezések \cite{posix} csillag karakterét (*), ami nulla vagy több karaktert helyettesít a kifejezésben, nem lehetne megkülönböztetni a C/C++ programozási nyelvekben használt mutató típusmódosító karakterrel szemben. Azonban ez a probléma megoldható lenne ha védőkaraktert használnánk: például a /* jelentené a mutató típust. Ez a megoldás azonban elrontaná az egyszerű mutató típusok átlátható leírását. Egy másik lehetőség, hogy 
+\subsubsection{Komment}
+Kommentek használatával olvashatóbbá tehetjük a kódunkat, vagy magyarázatként szolgálhat a kódot felhasználó számára. Egy komplexebb lekérdezést felcímkézhetjük kommentekkel, így megkönnyítve az azt reprezentáló entitás megértését. Mivel a CQL a JSON nyelvből alakítottam ki, így az egy soros kommentezés a Javascript nyelvben is használatos dupla per jellel kezdődik.
+
+\chapter{Esettanulmány}
+\section{Típus példányosítása gyár mintával}
+
 \chapter{Konklúzió}
 
 \begin{thebibliography}{99}
@@ -556,6 +568,8 @@ copy_ctor(T) := function {
 	in Object Oriented Programming, Systems, Languages and Applications (OOPSLA’07). ACM, 2005, pp.	365–383.
 	
 	\bibitem{json}Bray, Tim. "The javascript object notation (json) data interchange format." (2014).
+	
+	\bibitem{design_patterns} Vlissides, John, et al. "Design patterns: Elements of reusable object-oriented software." Reading: Addison-Wesley 49.120 (1995): 11.
 	
 \end{thebibliography}
 	
