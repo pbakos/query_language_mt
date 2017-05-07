@@ -540,13 +540,56 @@ copy_ctor(T) := function {
 \par Ezen felül olyan predikátumok is ide tartoznak, amelyek nem szigorúan az entitásokhoz köthető tulajdonságok. Nagyon jó példa erre a változóknál található. Egy változó hivatkozásánál általában sokkal fontosabb, hogy mikor íródik az adott változó, és az olvasás csak mellékes. Mindkét esetre (írás, olvasás) a nyelvnek beépített predikátuma létezik.
 \subsubsection{Reguláris kifejezések}
 Nem várható el a felhasználótól, hogy minden típust, változó vagy függvény nevet pontosan tudjon, ismerjen. Egy projekt kódolási konvenció viszont nagyban hozzájárulnak a kódbázisban való navigálásban. Tehát nem csak akkor veszi hasznát egy részletnek a programozó, ha csak emlékei vannak a keresett entitásról, hanem akkor is, ha nevezési konvenciókat alkalmaznak a projekten. Ilyen részletek definiálásához reguláris kifejezéseket használata ajánlott.
-\par A lista típus definiálásánál már előkerültek a reguláris kifejezések. Hasonlóan az ott említett probléma jelentkezik egyszerű szöveg értéknél. Gondoljuk bele, hogy például egy függvény visszatérési értékének szeretne a programozó reguláris kifejezést megadni. Ekkor a sokak által használt POSIX reguláris kifejezések \cite{posix} csillag karakterét (*), ami nulla vagy több karaktert helyettesít a kifejezésben, nem lehetne megkülönböztetni a C/C++ programozási nyelvekben használt mutató típusmódosító karakterrel szemben. Azonban ez a probléma megoldható lenne ha védőkaraktert használnánk: például a /* jelentené a mutató típust. Ez a megoldás azonban elrontaná az egyszerű mutató típusok átlátható leírását. Egy másik lehetőség, hogy 
+\par A lista típus definiálásánál már előkerültek a reguláris kifejezések. Hasonlóan az ott említett probléma jelentkezik egyszerű szöveg értéknél. Gondoljuk bele, hogy például egy függvény visszatérési értékének szeretne a programozó reguláris kifejezést megadni. Ekkor a sokak által használt POSIX reguláris kifejezések csillag karakterét (*), ami nulla vagy több karaktert helyettesít a kifejezésben, nem lehetne megkülönböztetni a C/C++ programozási nyelvekben használt mutató típusmódosító karakterrel szemben. Azonban ez a probléma megoldható lenne ha védőkaraktert használnánk: például a /* jelentené a mutató típust. Ez a megoldás azonban elrontaná az egyszerű mutató típusok átlátható leírását. Egy másik lehetőség, hogy ha reguláris kifejezésként értelmezett nulla vagy több karaktert jelentő helyettesítést szeretné használni a felhasználó, akkor azt kell a per jellel semlegesítenie. Ez utóbbi megoldásra esett a választás, mivel reguláris kifejezések írása ritkább, mint a mutató jelölés meghatározása egy adott típushoz.
 \subsubsection{Komment}
 Kommentek használatával olvashatóbbá tehetjük a kódunkat, vagy magyarázatként szolgálhat a kódot felhasználó számára. Egy komplexebb lekérdezést felcímkézhetjük kommentekkel, így megkönnyítve az azt reprezentáló entitás megértését. Mivel a CQL a JSON nyelvből alakítottam ki, így az egy soros kommentezés a Javascript nyelvben is használatos dupla per jellel kezdődik.
 
 \chapter{Esettanulmány}
-\section{Típus példányosítása gyár mintával}
+\section{Típus példányosítása gyártó művelet tervmintával}
+Nagy méretű szoftverek esetén az objektumok példányosítása nem mindig az osztály konstruktor explicit hívásával történik. Ez egy olyan fontos terület az objektumorientált tervezésben, hogy külön programozási tervmintákat dolgoztak ki objektumok létrehozására \cite{design_patterns}. Többek között ilyen az gyártó művelet, prototípus vagy az egyke. Ezek a tervminták arra szolgálnak, hogy segítségükkel objektumokat létrehozzunk, előállítsunk. Az osztályhierarchiát tekintve úgy vannak megvalósítva, hogy a példányosítani kívánt osztályok egy közös absztrakt osztályból származnak és a kliens kód egy delegált osztályon keresztül hozza létre az objektumokat.
+\subsection{Gyártó művelet tervminta}
 
+\subsection{Lekérdezés}
+A probléma akkor adódik, ha a programban nem intuitív, hogy egy osztályt mi alapján lehet létrehozni. Jellemzően, ha egy osztály példányosítását egy delegált osztályon keresztül szeretnénk elérhetővé tenni, akkor annak valamennyi konstruktorát priváttá érdemes definiálni. Ezzel elkerülhetők olyan hibák, amelyek például más osztályok függőségéből adódnak. Azonban egy olyan kódbázisban, ahol nem egyértelmű osztályok létrehozása, mert a hozzá tartozó gyártó egy másik modulban, projektben található, akkor ennek felkutatása rengeteg időt felemészt a programozó idejéből. Egy megfelelő lekérdezéssel viszont gyorsan meg lehet találni ezeket a gyártó osztályokat.
+\par  Tehát, van egy osztály definíciónk (aminek privát konstruktora van), és keressük azt az osztályt, aminek van olyan függvénye, hogy egy ilyen típusú objektummal tér vissza. 
+\begin{verbatim}
+factory_method(ConcreteProduct) := class {
+   function {
+      return: ConcreteProduct
+   }
+}
+\end{verbatim}
+\par Ezek a feltételek azonban még nem szűkítik le a találatok listáját, hogy könnyű legyen a megfelelő osztályt megtalálni. Következésképpen, ha egy osztálynak van csak egy olyan függvénye, ami a keresendő típussal tér vissza, akkor azt szintén meg lennének jelenítve a találati listában. Ha viszont a gyártó művelet tervmintából indulunk ki, akkor erősíthetünk a feltételeken. Eszerint a keresendő osztálynak van egy őse (amit a kliens kód használ), és a gyártó objektum is egy absztrakt osztályból származik (szintén a kliens kód egyszerűsítése miatt). Ezeket a további információkat felhasználva adódik az alábbi predikátum:
+\begin{verbatim}
+factory_method(Product, ConcreteProduct) := class {
+   inherit: class {
+      @abstract
+      function { 
+         return: Product 
+      }
+   }
+
+   function {
+      return: ConcreteProduct
+   }
+}
+\end{verbatim}
+\par A predikátum használatával generikussá, újra felhasználhatóvá tehető ez a típusú lekérdezés. A predikátum két paramétere az ismert osztály (\textit{ConcreteProduct}), amiből szeretnénk objektumot létrehozni és annak az ősosztály (\textit{Product}). A lekérdezésben az \textit{inherit} attribútummal erősítve a feltételeket, egy szűkített listából gyorsan megkapható a keresett osztály. Ezzel az lett megadva, hogy az \textit{interface}-ként szolgáló ősosztálynak is van olyan metódusa, amivel előállítható az objektum. Következésképpen, elhagytuk a találatok listájából például az olyan osztályokat, aminek van csak \textit{getter} tagfüggvény miatt van a keresendő típussal visszatérő függvénye.
+\section{Átalakító osztály keresése}
+Egy másik fontos területe a tervmintáknak az úgynevezett szerkezeti minták \cite{design_patterns}. Ezek a minták arra szolgálnak, hogy több objektumból összetett, nagyobb szerkezeteket hozzunk létre (általában új funkcionalitást is kapva). Egy ilyen tervminta az átalakító (vagy más néven \textit{wrapper}), amely egy osztály felületét változtatja meg a kliens által elvártra. Az örökölt (\textit{legacy}) kódban gyakran előfordulnak átalakító osztályok, ezzel elkerülve, hogy teljesen újra kelljen írni már meglévő osztályokat. Viszont ha a programozó csak a régi kódot ismeri, és nem tud az átalakító osztály definíciójáról, akkor ő is implementálni fog egy átalakítót az új felület eléréséhez. Ez több szempontból is hibákhoz vezethet: például mindkét átalakítót változtatni kell, ha a felület megváltozik, azaz mindkettőt karbantartani kell. Újrafelhasználhatóság szempontjából is érdemes a kódbázisban megkeresni az átalakító osztályokat és azokat használni.
+\subsection{Átalakító tervminta}
+Az átalakítóval olyan osztályok is tudnak egymással kommunikálni, kapcsolatot létesíteni, amelyek az eltérő felületük miatt nem lennének rá képesek. 
+\subsection{Lekérdezés}
+A lekérdezéshez az objektum átalakító osztályt határozzuk meg. Mivel a "régi" kódból ismerjük az osztályt, ezért annak a neve paraméterként szolgál a predikátum definíciójában. Mint az előző esettanulmánynál, úgy itt is a predikátummal (az újrafelhasználhatóságot szem előtt tartva) lehet leírni keresendő osztályokat. Az átalakítóval kapcsolatban viszont csak annyi információ áll rendelkezésre, hogy annak az adattagja az átalakított objektum, illetve rendelkezik valamennyi számú, szignatúrájú tagfüggvénnyel. Értelem szerűen az utóbbi feltételt nem lehetséges definiálni a lekérdező nyelv segítségével. Azonban az adattagra tehetünk megszorítást: mivel az átalakított osztályon kívül más objektumot nem aggregál az átalakító, így megadható további szűrő feltételnek, hogy az átalakított objektum az egyedüli adattag az osztályban.
+\begin{verbatim}
+wrapper(Adaptee) := class {
+   variable { 
+      type: Adaptee
+      @only
+   }
+}
+\end{verbatim}
+\par Az \textit{only} predikátumot felhasználva kapjuk az átalakító osztály lekérdezéshez szükséges definíciót. Egy olyan osztály megtalálása a cél, aminek csak egyetlen adattagja van, az pedig az argumentumként megadott átalakítani kívánt osztály.
 \chapter{Konklúzió}
 
 \begin{thebibliography}{99}
