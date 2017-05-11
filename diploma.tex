@@ -581,7 +581,11 @@ Nagy méretű szoftverek esetén az objektumok példányosítása nem mindig az 
 \subsection{Gyártó művelet tervminta}
 A gyártó művelet olyan létrehozási tervminta, amellyel anélkül lehet objektumokat előállítani, hogy pontosan meghatároznánk az objektum típusát. Így az objektum létrehozásához szükséges függőségeket delegáltuk egy másik osztályba. A kliens kódnak nem kell azzal foglalkoznia, hogy az objektumokat hogyan kell létrehozni, vagy mik az objektumok függőségei. Csak azt az információt kell megadnia a gyártó műveletnek, amivel már eldönthető, hogy az objektumot hogyan kell felépíteni (például melyik leszármazott példányt kell visszaadni).
 
-%TODO: insert uml diagram
+\begin{figure}
+	\caption{Gyártó művelet tervminta  UML diagram}
+	\centering
+	\includegraphics[width=15cm,keepaspectratio]{factory_method.png}
+\end{figure}
 
 A gyártó művelet implementálásához általában szükség van egy absztrakt gyártó osztályra, ha a példányosítandó osztálynak is van interfész osztálya. A kliens kód ezt az gyártó interfészt fogja használni. Az absztrakt gyártót megvalósító osztály  fogja a konkrét objektumot példányosítani, majd visszaadni azt a hívónak.
 \subsection{Lekérdezés}
@@ -614,6 +618,11 @@ factory_method(Product, ConcreteProduct) := class {
 Egy másik fontos területe a tervmintáknak az úgynevezett szerkezeti minták \cite{design_patterns}. Ezek a minták arra szolgálnak, hogy több objektumból összetett, nagyobb szerkezeteket hozzunk létre (általában új funkcionalitást is kapva). Egy ilyen tervminta az átalakító (vagy más néven \textit{wrapper}), amely egy osztály felületét változtatja meg a kliens által elvártra. Az örökölt (\textit{legacy}) kódban gyakran előfordulnak átalakító osztályok, ezzel elkerülve, hogy teljesen újra kelljen írni már meglévő osztályokat. Viszont ha a programozó csak a régi kódot ismeri, és nem tud az átalakító osztály definíciójáról, akkor ő is implementálni fog egy átalakítót az új felület eléréséhez. Ez több szempontból is hibákhoz vezethet: például mindkét átalakítót változtatni kell, ha a felület megváltozik, azaz mindkettőt karbantartani kell. Újrafelhasználhatóság szempontjából is érdemes a kódbázisban megkeresni az átalakító osztályokat és azokat használni.
 \subsection{Átalakító tervminta}
 Az átalakítóval olyan osztályok is tudnak egymással kommunikálni, kapcsolatot létesíteni, amelyek az eltérő felületük miatt nem lennének rá képesek. Több esetben is használható ez a minta. Az egyik, amikor meglévő osztályt szeretnénk használni, de felülete nem illeszkedik az igényekhez. Létezik olyan eset is, amikor több osztályt akarunk használni, de nem akarjuk származtatással átalakítani a felületüket. Ekkor egy átalakító objektummal megváltoztatható a szülő objektum felülete.
+\begin{figure}
+	\caption{Átalakító tervminta UML diagram}
+	\centering
+	\includegraphics[width=15cm,keepaspectratio]{adapter.png}
+\end{figure}
 \par Az átalakító tervmintát úgy lehet implementálni, hogy az egyik komponenst becsomagoljuk egy olyan osztályba, amivel már tud kommunikálni a másik osztály. A becsomagoló osztályba aggregáljuk az egyik osztályt példányát, majd az interfész függvényeket ennek a példány tagfüggvényeinek hívásaival implementáljuk.
 \subsection{Lekérdezés}
 A lekérdezéshez az objektum átalakító osztályt határozzuk meg. Mivel a "régi" kódból ismerjük az osztályt, ezért annak a neve paraméterként szolgál a predikátum definíciójában. Mint az előző esettanulmánynál, úgy itt is a predikátummal (az újrafelhasználhatóságot szem előtt tartva) lehet leírni keresendő osztályokat. Az átalakítóval kapcsolatban viszont csak annyi információ áll rendelkezésre, hogy annak az adattagja az átalakított objektum, illetve rendelkezik valamennyi számú, szignatúrájú tagfüggvénnyel. Értelem szerűen az utóbbi feltételt nem lehetséges definiálni a lekérdező nyelv segítségével. Azonban az adattagra tehetünk megszorítást: mivel az átalakított osztályon kívül más objektumot nem aggregál az átalakító, így megadható további szűrő feltételnek, hogy az átalakított objektum az egyedüli adattag az osztályban.
