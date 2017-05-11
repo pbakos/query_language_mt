@@ -43,5 +43,5 @@
 \select@language {magyar} \contentsline {subsection}{\numberline {4.1.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{35}
 \select@language {magyar} \contentsline {section}{\numberline {4.2}\IeC {\'A}talak\IeC {\'\i }t\IeC {\'o} oszt\IeC {\'a}ly keres\IeC {\'e}se}{36}
 \select@language {magyar} \contentsline {subsection}{\numberline {4.2.1}\IeC {\'A}talak\IeC {\'\i }t\IeC {\'o} tervminta}{36}
-\select@language {magyar} \contentsline {subsection}{\numberline {4.2.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{36}
+\select@language {magyar} \contentsline {subsection}{\numberline {4.2.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{37}
 \select@language {magyar} \contentsline {chapter}{\numberline {5}Konkl\IeC {\'u}zi\IeC {\'o}}{38}

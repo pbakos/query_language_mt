@@ -35,24 +35,48 @@
 \begin{document}
 
 \begin{titlepage}
+	
+	\begin{minipage}{0.40\linewidth}
+		\includegraphics[width=30mm,keepaspectratio]{ELTE_logo.png}
+	\end{minipage}
+	\begin{minipage}{0.50\linewidth}
+		\begin{center}
+			Eötvös Loránd Tudományegyetem \\
+			Informatikai Kar \\
+			Programozási Nyelvek és Fordítóprogramok Tanszék
+		\end{center}
+	\end{minipage}
+	
+	\hrule
+	\vfill
+	
 	\begin{center}
-		\includegraphics[width=80mm,keepaspectratio]{ELTE_logo.png}\\
-		\vspace{0.3cm}
-		\Large\textbf{Eötvös Loránd Tudományegyetem}\\
-		\Large\textbf{Informatikai Kar}\\[5mm]
-		\large\textmd{Programozási Nyelvek és Fordítóprogramok Tanszék}\\[3cm]
-
-		{\LARGE\bf Lekérdező nyelv definiálása és prototípus implementálása kódmegértés céljából}\\[3cm]
-
-		\begin{tabular}{cc}
-			\makebox[7cm]{\emph{Témavezetõ:}} & \makebox[7cm]{\emph{Készítette:}} \\
-			\makebox[7cm]{Brunner Tibor} & \makebox[7cm]{Bakos Péter}\\
-			\makebox[7cm]{PhD hallgató} & \makebox[7cm]{MSc hallgató}\\
-		\end{tabular}
-
-		\vfill
-		{\large Budapest, 2017}
+		\Huge
+		\textbf{Lekérdező nyelv definiálása és prototípus implementálása kódmegértés céljából}
+		\normalsize
 	\end{center}
+	
+	\vfill
+	
+	\begin{minipage}[t]{0.5\linewidth}
+		\begin{flushleft}
+			\textbf{Brunner Tibor} \\
+			PhD hallgató
+		\end{flushleft}
+	\end{minipage}
+	\begin{minipage}[t]{0.5\linewidth}
+		\begin{flushright}
+			\textbf{Bakos Péter} \\
+			Programtervező Informatikus MSc
+		\end{flushright}
+	\end{minipage}
+	
+	\vfill
+	
+	\begin{center}
+		Budapest, 2017
+	\end{center}
+	
 \end{titlepage}
 
 
@@ -589,7 +613,8 @@ factory_method(Product, ConcreteProduct) := class {
 \section{Átalakító osztály keresése}
 Egy másik fontos területe a tervmintáknak az úgynevezett szerkezeti minták \cite{design_patterns}. Ezek a minták arra szolgálnak, hogy több objektumból összetett, nagyobb szerkezeteket hozzunk létre (általában új funkcionalitást is kapva). Egy ilyen tervminta az átalakító (vagy más néven \textit{wrapper}), amely egy osztály felületét változtatja meg a kliens által elvártra. Az örökölt (\textit{legacy}) kódban gyakran előfordulnak átalakító osztályok, ezzel elkerülve, hogy teljesen újra kelljen írni már meglévő osztályokat. Viszont ha a programozó csak a régi kódot ismeri, és nem tud az átalakító osztály definíciójáról, akkor ő is implementálni fog egy átalakítót az új felület eléréséhez. Ez több szempontból is hibákhoz vezethet: például mindkét átalakítót változtatni kell, ha a felület megváltozik, azaz mindkettőt karbantartani kell. Újrafelhasználhatóság szempontjából is érdemes a kódbázisban megkeresni az átalakító osztályokat és azokat használni.
 \subsection{Átalakító tervminta}
-Az átalakítóval olyan osztályok is tudnak egymással kommunikálni, kapcsolatot létesíteni, amelyek az eltérő felületük miatt nem lennének rá képesek.
+Az átalakítóval olyan osztályok is tudnak egymással kommunikálni, kapcsolatot létesíteni, amelyek az eltérő felületük miatt nem lennének rá képesek. Több esetben is használható ez a minta. Az egyik, amikor meglévő osztályt szeretnénk használni, de felülete nem illeszkedik az igényekhez. Létezik olyan eset is, amikor több osztályt akarunk használni, de nem akarjuk származtatással átalakítani a felületüket. Ekkor egy átalakító objektummal megváltoztatható a szülő objektum felülete.
+\par Az átalakító tervmintát úgy lehet implementálni, hogy az egyik komponenst becsomagoljuk egy olyan osztályba, amivel már tud kommunikálni a másik osztály. A becsomagoló osztályba aggregáljuk az egyik osztályt példányát, majd az interfész függvényeket ennek a példány tagfüggvényeinek hívásaival implementáljuk.
 \subsection{Lekérdezés}
 A lekérdezéshez az objektum átalakító osztályt határozzuk meg. Mivel a "régi" kódból ismerjük az osztályt, ezért annak a neve paraméterként szolgál a predikátum definíciójában. Mint az előző esettanulmánynál, úgy itt is a predikátummal (az újrafelhasználhatóságot szem előtt tartva) lehet leírni keresendő osztályokat. Az átalakítóval kapcsolatban viszont csak annyi információ áll rendelkezésre, hogy annak az adattagja az átalakított objektum, illetve rendelkezik valamennyi számú, szignatúrájú tagfüggvénnyel. Értelem szerűen az utóbbi feltételt nem lehetséges definiálni a lekérdező nyelv segítségével. Azonban az adattagra tehetünk megszorítást: mivel az átalakított osztályon kívül más objektumot nem aggregál az átalakító, így megadható további szűrő feltételnek, hogy az átalakított objektum az egyedüli adattag az osztályban.
 \begin{verbatim}
