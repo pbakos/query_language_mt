@@ -79,21 +79,21 @@
 	
 \end{titlepage}
 
-
 \tableofcontents
-\thispagestyle{empty}
 
 \chapter{Bevezetés}
-
+Ipari környezetben a forráskódok terjedelme hatalmas lehet. A több éves (vagy évtizedes) fejlesztés során a kód sorainak száma egyre csak növekszik. Ennyi idő alatt nagy valószínűséggel már sokan nem is azon a projekten dolgoznak, akik elkezdték a fejlesztést. Sőt lehetnek a szoftvernek olyan komponensei, amiket olyan emberek implementáltak, akik már nem is az adott cégnél dolgoznak. Ez idő alatt a felhasznált programozási nyelvek vagy technológiák is változhatnak, amik szintén nehezítik a szoftver fejlesztését. Egy ilyen környezetben a kódban való navigálás, a kód megértése sok nehézséget okoz a programozóknak. A kódmegértés folyamatának egyik legalapvetőbb funkciója, hogy hatékonyan lehessen a forráskódban keresni (még nagy terjedelmű kódbázis esetén is).
+\par A forráskódban való kereséshez a programozási nyelvek entitásai, jellemzői, azonosítói nyújtanak segítséget, hiszen csak ilyen típusú keresések érdekelnek. Ezek többek között lehetnek függvényekhez kapcsolódó keresések bizonyos információk tudatában, például név vagy szignatúra elemei alapján való keresés. Ezen felül még ide sorolhatók például az osztály vagy változók felkutatása is. 
+\par Az ilyen speciális keresésekhez megfelelő eszköz egy lekérdező nyelv. Egy lekérde-ző nyelv segítségével a programozó magas szinten tud a forráskódban fellelhető entitásokra keresni. Ilyen és ehhez hasonló lekérdező nyelvek már léteznek az iparban. Ezek amellett, hogy általában nyelvspecifikusak, az egyszerű lekérdezésekhez is komplex kifejezéseket kell a felhasználónak írnia. Például egy \textit{f} nevű függvény megtalálásához minél egyszerűbb legyen lekérdezést definiálni a programozónak. Dolgozatom célja egy olyan lekérdező nyelv megalkotása, ami nem függ a használt programozási nyelvtől és a már említett egyszerű használat mellett a felhasználó képes legyen komplex lekérdezések meghatározására is (ahogyan azt a már létező lekérdező nyelvek tudják).
 
 \chapter{Lekérdező nyelv}
-Lekérdező nyelvet adatbázisok és információs rendszerekben szoktak alkalmazni, hogy lekérdezésekkel megtalálhatóak legyenek bizonyos információk.  Például a relációs adatbázisok adatainak kinyeréséhez, hozzáadásához, törléséhez és módosításához használjuk az SQL (Structured Query Language) nyelvet. Az SQL egy szakterület-specifikus nyelv (angolul domain-specific language, röviden DSL), amely egy bizonyos szakterületre koncentrál (adatbáziskezelés). Az SQL az adatbázis információinak lekérdezéséhez egy néhány utasításból álló parancsot használ. A nyelv komplexitását mutatja, hogy parancsokon belül is lehetnek alparancsok, ezáltal kifinomultabb lekérdezéseket is alkalmazhat a felhasználó. 
+Lekérdező nyelvet adatbázisok és információs rendszerekben szoktak alkalmazni, hogy lekérdezésekkel megtalálhatóak legyenek bizonyos információk.  Például a reláci-ós adatbázisok adatainak kinyeréséhez, hozzáadásához, törléséhez és módosításához használjuk az SQL (Structured Query Language) nyelvet. Az SQL egy szakterület-specifikus nyelv (angolul domain-specific language, röviden DSL), amely egy bizonyos szakterületre koncentrál (adatbáziskezelés). Az SQL az adatbázis információi-nak lekérdezéséhez egy néhány utasításból álló parancsot használ. A nyelv komplexitását mutatja, hogy parancsokon belül is lehetnek alparancsok, ezáltal kifinomultabb lekérdezéseket is alkalmazhat a felhasználó. 
 \par Egy másik lekérdező nyelv a LINQ (Language Integrated Query) egy olyan nyelv, amely a C\# programozási nyelv része. A LINQ-t a Microsoft fejlesztett ki C\# nyelv adatstruktúrák információjának kinyerésére az SQL nyelv szintaktikában használatos utasításokkal (Select, Where, Group By, stb.).
 \par Létezik az XML nyelvhez is lekérdező nyelv. Az XML egy leíró nyelv, amely egy fa struktúrájú, bármilyen elemeket definiáló entitást ír le. A fa csúcsainak lekérdezésére fejlesztették ki az XPath nyelvet \cite{xpath}. Ezen felül az XPath segítségével az XML dokumentumban fellelhető információk alapján kiszámolhatók különböző eredmények (például számokkal vagy karakterláncokkal kapcsolatos számítások).
-\par A forráskódban való kereséshez az idők, ahogy az ipari szoftverek terjedelme egyre nőtt, úgy nőttek a forráskód sorainak száma is. Egy ipari méretű szoftverben a kiigazodás jelentősen komplex feladat. Az egyszerű szöveges keresők nem elég okosak ahhoz, hogy olyan kereséseket végezzenek. Ennek a műveletnek a megkönnyebbítésére az évek során több lekérdező nyelvet is fejlesztettek. Az következő fejezetekben összehasonlítom a piacon levő már kiforrott lekérdező nyelveket kifejező erő, komplexitás és tanulhatóság szemszögéből.
+\par A forráskódban való kereséshez az idők, ahogy az ipari szoftverek terjedelme egyre nőtt, úgy nőttek a forráskód sorainak száma is. Egy ipari méretű szoftverben a kiigazodás jelentősen komplex feladat. Az egyszerű szöveges keresők, mint például a grep \cite{grep} nem ismerik egy programnak a struktúráját, felépítését, így nem alkalmasak a speciális, forráskódhoz kapcsolódó keresések felkutatására. Ennek a műveletnek a megkönnyebbítésére az évek során több lekérdező nyelvet is fejlesztettek. Az következő fejezetekben összehasonlítom a piacon levő már kiforrott lekérdező nyelveket kifejező erő, komplexitás szemszögéből.
 
 \section{jQuery}
-A JQuery lekérdező nyelv a logikai nyelvek közé sorolható, ami TyRuBa programnyelven alapul \cite{jquery}. A TyRuBa hasonlít a Prologhoz, azaz egy olyan logikai programozási nyelv, amely rugalmasságot biztosít komplex lekérdezések írásához és szabályokat magasabb rendű kapcsolatok leírásához. A JQuery lekérdező nyelv valójában a TyRuBa nyelv kiterjesztése egy olyan könyvtárral, amelyben a forráskódhoz kapcsolódó predikátumokat definiáltak. Minden predikátumra a nevével hivatkozunk, a paraméterei lehetnek változók (amik elejére kérdőjelet teszünk) vagy attribútum nevek. Például a \texttt{class(?C, name, HelloWorld)} lekérdezés visszaadja az összes olyan osztályt, aminek a name tulajdonsága („\textit{property}”-je), azaz az osztály neve a HelloWorld szöveggel megegyezik. Komplexebb lekérdezéseket úgy kapunk, ha vesszővel elválasztott lekérdezés-sorozatot írunk. Tegyük fel, hogy keressük az olyan osztályokat, amelyeknek van \textit{int} típusú értékkel visszatérő metódusa. Ezt a lekérdezést így írhatjuk le:
+A JQuery lekérdező nyelv a logikai nyelvek közé sorolható, ami TyRuBa programnyelven alapul \cite{jquery}. A TyRuBa hasonlít a Prologhoz, azaz egy olyan logikai programozási nyelv, amely rugalmasságot biztosít komplex lekérdezések írásához és szabályokat magasabb rendű kapcsolatok leírásához. A JQuery lekérdező nyelv valójában a TyRuBa nyelv kiterjesztése egy olyan könyvtárral, amelyben a forráskód-hoz kapcsolódó predikátumokat definiáltak. Minden predikátumra a nevével hivatkozunk, a paraméterei lehetnek változók (amik elejére kérdőjelet teszünk) vagy attribútum nevek. Például a \texttt{class(?C, name, HelloWorld)} lekérdezés visszaadja az összes olyan osztályt, aminek a name tulajdonsága („\textit{property}”-je), azaz az osztály neve a HelloWorld szöveggel megegyezik. Komplexebb lekérdezéseket úgy kapunk, ha vesszővel elválasztott lekérdezés-sorozatot írunk. Tegyük fel, hogy keressük az olyan osztályokat, amelyeknek van \textit{int} típusú értékkel visszatérő metódusa. Ezt a lekérdezést így írhatjuk le:
 
 \begin{verbatim}
 class(?C, method, ?M),
@@ -112,7 +112,7 @@ where c.declaresMethod("equals") and
       c.fromSource
 select c.getPackage(), c
 \end{verbatim}
-A Select rész hasonlóan az SQL-hez, kilistázza ezen osztályok csomagnevét és magának az osztálynak a nevét.
+A Select rész hasonlóan az SQL-hez, kilistázza ezen osztályok csomagnevét és magá-nak az osztálynak a nevét.
 \subsection{Predikátumok}
 \par Az elnevezett és parametrizált lekérdezéseket nevezzük predikátumoknak. Ezeket a predikátumokat felhasználhatjuk más lekérdezésekben is. A predikátumok által egyszerűen kaphatunk rendkívül komplex lekérdezéseket anélkül, hogy feláldoznánk a lekérdezés olvashatóságát, hiszen megfelelő névválasztással a predikátumok absztraktabbá, tömörebbé tehetik azokat.
 \begin{verbatim}
@@ -123,7 +123,7 @@ predicate between(RefType down, RefType between, RefType up){
 \end{verbatim}
 A fenti predikátum használatával megkaphatók a \textit{down} és \textit{up} típusok örökölődési hierarchiájában a köztes osztályok. Azaz, a predikátum igaz lesz, ha a \textit{down} osztály a \textit{between-nek} altípusa (leszármazottja), és az \textit{up} a \textit{between-nek} szupertípusa (őse).
 \subsection{Aggregátor függvények}
-Az SQL nyelv lehetőséget ad különböző összegek, átlagok, számlálások kiszámítására. Ezeket az aggregátor függvényeket gyakran GROUP BY utasítással együtt kell használni. A .QL az Eindhoven Quantifier Notation-t \cite{eqn_1, eqn_2} használja, ami megkönnyíti az előbb említett függvények írását. Ezzel a jelölési módszerrel egy aggregátor függvény három részből áll: lokális változók, feltételek, termek. Ezek a '\textbar' karakterrel vannak elhatárolva és ezeket előzi meg az aggregátor függvény neve (sum, count, avg, min, max). A lokális változókat felhasználhatjuk a feltételekben, amik értelemszerűen szűrik a találatokat. A term határozza meg, hogy mely értéken szeretnénk aggregálni. A sorrend és azok szerepe nagyban hasonlít a FROM-WHERE-SELECT hármasra. Ahogyan SQL-ben, úgy .QL-ben is a SELECT utasításhoz írjuk az aggregátor függvényt. Azonban a GROUP BY utasítás nem szükséges .QL nyelvben.
+Az SQL nyelv lehetőséget ad különböző összegek, átlagok, számlálások kiszámítására. Ezeket az aggregátor függvényeket gyakran GROUP BY utasítással együtt kell használni. A .QL az Eindhoven Quantifier Notation-t \cite{eqn_1, eqn_2} használja, ami megköny-nyíti az előbb említett függvények írását. Ezzel a jelölési módszerrel egy aggregátor függvény három részből áll: lokális változók, feltételek, termek. Ezek a '\textbar' karakterrel vannak elhatárolva és ezeket előzi meg az aggregátor függvény neve (sum, count, avg, min, max). A lokális változókat felhasználhatjuk a feltételekben, amik értelemszerűen szűrik a találatokat. A term határozza meg, hogy mely értéken szeretnénk aggregálni. A sorrend és azok szerepe nagyban hasonlít a FROM-WHERE-SELECT hármasra. Ahogyan SQL-ben, úgy .QL-ben is a SELECT utasításhoz írjuk az aggregátor függvényt. Azonban a GROUP BY utasítás nem szükséges .QL nyelvben.
 \begin{verbatim}
 from Package p
 where p.hasName("abc.aspectj.ast")
@@ -257,7 +257,7 @@ A lekérdező nyelv tervezésekor elsődleges célok között voltak a nyelvfüg
 \subsection{Függvény lekérdezés szignatúra szerint}
 \textbf{Lekérdezés: Határozzuk meg az összes \textit{void} visszatérési értékű függvényt, amelyek második paramétere \textit{int} típusú.}
 \\
-A legalapvetőbb kérdések egyike függvények megkeresése azok szignatúrája alapján. Egy függvény szignatúrájának három része van: visszatérési érték, név, paraméterlista. Az előbbi kettő egyértelműen egyszerű azonosítók, amiket karakterláncként reprezentálunk. A paraméterlista, ahogy a neve is mutatja azonosítók listája.
+A legalapvetőbb kérdések egyike függvények megkeresése azok szignatúrája alapján. Egy függvény szignatúrájának három része van: visszatérési érték, név, paraméterlis-ta. Az előbbi kettő egyértelműen egyszerű azonosítók, amiket karakterláncként reprezentálunk. A paraméterlista, ahogy a neve is mutatja azonosítók listája.
 \par Egy lista megkülönböztetésére egy egyszerű szövegtől a szögletes zárójelek alkalmazandók. A listában való elemek elkülönítésére a vessző karaktert kell használni. Elképzelhető, hogy a lista nem minden elemét ismeri a programozó, vagy egyszerűen csak nem releváns információval bír az adott paraméter. Az ilyen problémák megoldására lehet használni helyettesítő karaktereket. Fontos, hogy könnyen lehessen csak egy vagy több argumentumot helyettesíteni. Ennek érdekében két helyettesítő karakter kerül bevezetésre: '\_' és a '?' karakterek. Az előbbi egy argumentum kiváltására szolgál, míg utóbbival nulla vagy több paramétert van lehetőség pótolni. Az akárhány karakter helyettesítésére általában a '*' karaktert szokták definiálni. A nyelv esetében azonban problémás lehet, ha C/C++ nyelveket vesszük figyelembe, hiszen ezekben a programozási nyelvekben a mutatók típusát a csillag karakter jelöli. Annak érdekében, hogy a lekérdező nyelv független maradjon a programozási nyelvektől, a kérdőjelre esett a választás, mivel a kérdőjel nem szerepel típus nevében egyetlen széles körben használt nyelvben sem.
 \par A reguláris kifejezés használatával már egyszerűen megadható a példában keresendő függvények definíciója. A lekérdezésnek három része van: függvényt keresünk, visszatérési értéke \textit{void}, második paramétere \textit{int}.
 \begin{verbatim}
@@ -270,7 +270,7 @@ function {
 \subsection{Változó olvasás/írás}
 \textbf{Lekérdezés: Határozzuk meg egy változó írását/olvasását.}
 \\
-Egy hosszú (sok sornyi forráskódból álló) függvény esetében a programozó számára jelentős problémát okozhat azon helyek megkeresése, összegyűjtése, ahol a függvényben használt változók értékének módosítása, olvasása történik. A szoftverfejlesztésben alkalmazott eszközök általában ezt a két referálást egységesen kezelik, azaz a programozó nem képes csak értékadás vagy csak érték kiolvasás helyére keresni. 
+Egy hosszú (sok sornyi forráskódból álló) függvény esetében a programozó számára jelentős problémát okozhat azon helyek megkeresése, összegyűjtése, ahol a függvény-ben használt változók értékének módosítása, olvasása történik. A szoftverfejlesztés-ben alkalmazott eszközök általában ezt a két referálást egységesen kezelik, azaz a programozó nem képes csak értékadás vagy csak érték kiolvasás helyére keresni. 
 \par Tegyük fel, hogy van egy változónk, amit rengetegszer használunk a kódban, de ezek közül csak elenyészően kevésszer kap új értéket. Ha a változó neve nem elég intuitív ahhoz, hogy megértsük pontosan milyen adatot tárol, akkor legegyszerűbb kideríteni, hogy értékadáskor a jobb oldalon milyen kifejezés szerepel. A csak olvasásra való keresés szintén fontos. Ha egy változót a függvény elején inicializálunk, de csak később használjuk fel (ami természetesen egy nagyon rossz programozói gyakorlat, hiszen így távol kerülnek egymástól logikailag összetartozó kódrészletek), akkor elég csak azokra a változó hivatkozásokra keresnünk, amelyek a változót nem írják. Hasonló a helyzet adattagok inicializásánál. Tegyük fel, hogy egy adattagot az osztály konstruktorában inicializálunk. Szeretnénk megtalálni azokat a hivatkozásokat a forráskódban, amikor ezt az adattagot felhasználjuk.
 \par A változók kezelésére egy új entitást kell bevezetni a nyelvbe. Ez lesz a \textit{variable}. Tételezzük fel, hogy a keresni kívánt változó nevét \textit{v}-nek hívjuk. Ennek a változónak azon hivatkozásait keressük a forráskódban, ahol új értéket kap.
 \begin{verbatim}
@@ -291,7 +291,7 @@ variable {
 \textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyek egy absztrakt osztályból (interfészből) származnak/implementálnak.}
 \\
 Az osztályok és az azon végrehajtott műveletek jelentősége az objektumorientált paradigmában alapvető fontosságú. Az osztályra egy külön entitásként kell tekinteni. Az attribútumok között szerepel, hogy mely más osztályból származott. Az öröklődéssel kifejezhetőek olyan kapcsolatok, amelyekkel a kód újrahasználás kivitelezhető. Az öröklődésnek egy speciális esete, amikor olyan osztályból származtatunk, amit nem lehet példányosítani (más néven interfész vagy absztrakt osztályból). Az interfészek használatával adhatunk különböző osztályoknak egy egységes felületet. Az interfész nem definiálja a függvényeit (vagy nem mindet). 
-\par Egy szoftverfejlesztőnek problémát jelenthet, ha egy olyan hibát kell felderítenie, ami absztrakt osztályokat (interfészeket) használ, de a hibát valamelyik származtatott osztály okozza. Ekkor a programozónak ismernie kell ezeket az osztályokat, amelyek felkutatása hasznos ismeret lehet.
+\par Egy szoftverfejlesztőnek problémát jelenthet, ha egy olyan hibát kell felderítenie, ami absztrakt osztályokat (interfészeket) használ, de a hibát valamelyik származta-tott osztály okozza. Ekkor a programozónak ismernie kell ezeket az osztályokat, amelyek felkutatása hasznos ismeret lehet.
 \begin{verbatim}
 class {
    inherit: class { 
@@ -304,17 +304,17 @@ class {
 \subsection{Tagfüggvény lekérdezés}
 \textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, aminek van \textit{string} visszatérési értékékű tagfüggvénye (toString()).}
 \\
-Az osztály a típus létrehozásának nyelvi eszköze, ahol a típusba tartozó elemek reprezentációját az adattagokkal, műveleteit pedig a metódusokkal adjuk meg. Metódusokra és adattagokra (változókra) már definiáltunk entitásokat az előző lekérdezésekben. Ezeket felhasználhatjuk az osztály entitás lekérdezésben. Így egy osztály lekérdezésben a CQL attribútumok mellett megadhatók függvény és adattag ("változók") allekérdezések. Ezeket egyszerűen az osztályon belül beágyazzuk. Ezzel a beágyazással azt adjuk meg, hogy az osztályon belül létezik az allekérdezésnek megfelelő tagfüggvény vagy adattag.
+Az osztály a típus létrehozásának nyelvi eszköze, ahol a típusba tartozó elemek reprezentációját az adattagokkal, műveleteit pedig a metódusokkal adjuk meg. Metódu-sokra és adattagokra (változókra) már definiáltunk entitásokat az előző lekérdezések-ben. Ezeket felhasználhatjuk az osztály entitás lekérdezésben. Így egy osztály lekérdezésben megadhatók függvény és adattag ("változók") allekérdezések. Ezekhez új attribútumokat definiálunk: \textit{members}, \textit{fields}. Az előbbi tagfüggvények meghatározására szolgál, míg utóbbi az adattagok leírásához szükséges. Mivel mindkét esetben egy osztály tartalmazhat több tagfüggvényt vagy adattagot, ezek az attribútumok listaként szerepelnek (mint ahogyan a függvényeknél az argumentumok). A listában szereplő elemek függvény, illetve változó lekérdezésekkel beágyazhatók. Ezzel a beágyazással azt adjuk meg, hogy az osztályon belül létezik az lekérdezésnek megfelelő tagfüggvény vagy adattag.
 \begin{verbatim}
 class {
-   function {
+   members: [ function {
       name: toString
       return: string
       arguments: []
-   }
+   } ]
 }
 \end{verbatim}
-Tehát a lekérdezés egy olyan osztály után keres, amelynek létezik olyan tagfüggvénye, aminek visszatérési értéke \textit{string} típusú, nincs paramétere, és a neve \textit{toString}.
+Tehát a lekérdezés egy olyan osztály után keres, amelynek létezik olyan tagfüggvé-nye, aminek visszatérési értéke \textit{string} típusú, nincs paramétere, és a neve \textit{toString}.
 \subsection{Függvényhívás meghatározása}
 \textbf{Lekérdezés: Határozzuk meg azokat a függvényeket, amelyek egy másik függvényt hívnak.}
 \\
@@ -333,11 +333,11 @@ function {
    }
 }
 \end{verbatim}
-\par Az első lekérdezésben azokat a függvények találatát kapjuk, amelyek megfelelnek annak a szűrőnek, hogy egy függvény hívja az \textit{f} nevű függvényt. A második lekérdezés eredménye ezzel ellentétben azok a függvények, amelyeket f nevű függvényből hívnak. Az allekérdezések segítségével nem csak a függvény nevére lehet keresni, hanem más tulajdonságú metódusokra is.
+\par Az első lekérdezésben azokat a függvények találatát kapjuk, amelyek megfelelnek annak a szűrőnek, hogy egy függvény hívja az \textit{f} nevű függvényt. A második lekérdezés eredménye ezzel ellentétben azok a függvények, amelyeket \textit{f} nevű függ-vényből hívnak. Az allekérdezések segítségével nem csak a függvény nevére lehet keresni, hanem más tulajdonságú metódusokra is.
 \subsection{Konstruktor lekérdezés}
 \textbf{Lekérdezés: Határozzuk meg az olyan osztályokat, amelyeknek van explicit másoló konstruktora.}
 \\
-Az objektumorientált paradigma egyik alapvető tagfüggvénye a konstruktor. Az összes objektum létrehozásánál ez a függvény fog lefutni, így ennek elemzése a lekérdező nyelv szempontjából rendkívül fontos. A C++ vagy Java programozási nyelvekben a konstruktor egy olyan tagfüggvény, aminek nincs visszatérési értéke, neve megegyezik a osztályéval. A konstruktor elég általános fogalom ahhoz, hogy predikátumként a nyelv beépített predikátuma legyen. Így a felhasználó kényelmesebben, könnyebben, egyszerűbben kérdezhet le konstruktorhoz kapcsolódó információkat. A nyelv jelenlegi elemeivel egy függvényről nem állapítható meg, hogy az osztály része-e, vagy sem. Magától értetődően a két fogalom szeparálása csak bonyolítaná a nyelvet (és nem is lenne természetes a felhasználó számára). Ezért, a függvény entitás kiegészül a \textit{class} attribútummal. Ez meghatározza, hogy ha a \textit{function} entitás egy tagfüggvényt reprezentál, akkor az melyik osztályhoz tartozik. Egy konstruktort az alábbi megszorítások alapján lehet definiálni a nyelv segítségével (akár a felhasználó is megtehetné, hogy saját definíciót ír):
+Az objektumorientált paradigma egyik alapvető tagfüggvénye a konstruktor. Az összes objektum létrehozásánál ez a függvény fog lefutni, így ennek elemzése a lekérdező nyelv szempontjából rendkívül fontos. A C++ vagy Java programozási nyelvekben a konstruktor egy olyan tagfüggvény, aminek nincs visszatérési értéke, neve megegyezik a osztályéval. A konstruktor elég általános fogalom ahhoz, hogy predikátumként a nyelv beépített predikátuma legyen. Így a felhasználó kényelme-sebben, könnyebben, egyszerűbben kérdezhet le konstruktorhoz kapcsolódó informá-ciókat. A nyelv jelenlegi elemeivel egy függvényről nem állapítható meg, hogy az osztály része-e, vagy sem. Magától értetődően a két fogalom szeparálása csak bonyolítaná a nyelvet (és nem is lenne természetes a felhasználó számára). Ezért, a függvény entitás kiegészül a \textit{class} attribútummal. Ez meghatározza, hogy ha a \textit{function} entitás egy tagfüggvényt reprezentál, akkor az melyik osztályhoz tartozik. Egy konstruktort az alábbi megszorítások alapján lehet definiálni a nyelv segítségével (akár a felhasználó is megtehetné, hogy saját definíciót ír):
 \begin{verbatim}
 ctor := function {
    class: class { name: $T }
@@ -363,39 +363,26 @@ Egy osztály lekérdezésben akármennyi tagfüggvényt definiálhatunk, ezzel s
 \par CQL-ben eddig csak arra voltak példák, hogy függvények, változók, osztályok létezését vizsgálta. Ennek ellentettje is lehet fontos, ahogyan a példa is mutatja, egy olyan tagfüggvény definiálása, amilyet nem tartalmaz az osztály. Az eddigi nyelvi elemek alkalmazásával nem oldható meg a probléma. Ha azonban a lekérdező nyelv attribútumaira úgy tekintünk, mint logikai kifejezésekre, akkor több nyelvben alkalmazott felkiáltójellel lehetne jelezni ennek a negálását.
 \begin{verbatim}
 class {
-   function { 
-      @copy_ctor
-   }
-   
-   !function {
-      name: operator=
-   }
-   
-   !function {
-      @destructor
-   }
+   members: [ 
+       function { @copy_ctor },   
+      !function { name: operator= },   
+      !function { @destructor }
+   ]
 }
 \end{verbatim}
 \par A lekérdezésben egy új elem került be a nyelvbe. A már említett negálás, amivel a "nem-létezést" definiáljuk. Ez a felkiáltójel prefix, amit a értékadó operátor és a destruktor allekérdezéseknek  adtunk. Ez megadja, hogy az operator= nevű tagfüggvény és a destruktor nem létezik. Ezeken felül a \textit{destructor} predikátumot egy későbbi lekérdezésben részletesebben vizsgáljuk.
-\subsection{Adattag hivatkozás osztály lekérdezésben}
-\textbf{Lekérdezés: Határozzuk meg azokat a tagfüggvényeket, amelyek egy bizonyos adattagra hivatkoznak (írnak/olvasnak).}
+\subsection{Attribútumok közötti logikai kapcsolat}
+\textbf{Lekérdezés: Határozzuk meg azokat osztályokat, amelyek \textit{int} vagy \textit{float} típusú adattagot tartalmaznak.}
 \\
-Függvények beágyazása az osztály lekérdezésekben már definiált. Az adattagokat hasonló módon kapjuk, mint a tagfüggvényeket: a már létező \textit{variable} entitást alkalmazzuk az adattag reprezentálására. Mivel egy függvényre lokális vagy globális változó lekérdezés és egy adattag lekérdezés között csak annyi különbség van, hogy az egyik egy osztály része, a másik pedig nem, a két entitást érdemes egyben kezelni.
-\par Egy osztályon belüli hibakeresésnél vagy új funkciók hozzáadásánál felmerülő nehézségek között szerepel, hogy egy adattagot melyik más tagfüggvényben használjuk fel (írjuk vagy olvassuk). Például, ha egy tagfüggvény egy adattagot csak olvas, akkor érdemes ismerni, hogy az adattag hol kap értéket. Ezzel az információval felgyorsítható a keresés, hiszen nem kell minden tagfüggvény megnézni, ahol csak hivatkozva van az adattag.
-\par Az új funkció a nyelvben, ami ezzel a lekérdezéssel egészül ki, hogy az adattag definiálása ugyanolyan módon történik, mint a függvények esetében. Egyszerűen csak beágyazzuk az osztály lekérdezés törzsébe. Egy változó írását már definiáltuk az előző lekérdezésekben. Ekkor a változó törzsében alkalmaztuk a hozzá tartozó predikátumot. Ebben az esetben viszont nem az összes előfordulást keressük, hanem azokat a tagfüggvényeket, amelyekben az értékadás történik. Ebből kifolyólag a predikátumot nem az adattag lekérdezésben kell használni, hanem a tagfüggvény belsejében.
+Függvények beágyazása az osztály lekérdezésekben már definiált. Az adattagokat hasonló módon kapjuk, mint a tagfüggvényeket: a már létező \textit{variable} entitást alkalmazzuk az adattag reprezentálására. Mivel egy függvényre lokális vagy globális változó lekérdezés és egy adattag lekérdezés között csak annyi különbség van, hogy az egyik egy osztály része, a másik pedig nem, a két entitást érdemes egyben kezelni. A tagfüggvény lekérdezésnél már említettük, hogy az adattagokat a \textit{fields} attribútum után kell leírnunk.
+\par Az eddigi lekérdezésekben mindenhol az "és" kapcsolatot használtuk. Például a nyelv attribútumai a logikai "és" művelettel vannak értelmezve. Ha azonban a "vagy" kapcsolatot szeretné a felhasználó definiálni, akkor erre nincs lehetősége. Ez elég nagy megszorítása lenne a lekérdező nyelvben. Gondoljunk bele abba az esetbe, amikor nem vagyunk biztosak egy keresendő függvény visszatérési értékében, vagy nem tudjuk pontosan, hogy egy adattagnak milyen típusa van. A "vagy" logikai kifejezés a nyelvben úgy lett definiálva, hogy ha egy attribútum többször szerepel egy lekérdezésben, akkor azok a logikai "vagy" kapcsolatban állnak.
 \begin{verbatim}
+//int vagy float típusú adattagot tartalmazó osztály
 class {
-   name: c
-   
-   variable { name: m }
-   
-   function { 
-      name: f 
-      @read(m)
-   }
+   fields: [ variable { type: int } ]
+   fields: [ variable { type: flaot } ]
 }
 \end{verbatim}
-\par Ugyanazt a predikátumot használjuk az \textit{f} nevű függvény törzsében, mint amikor egy változóhoz kötve alkalmaztuk. Viszont a változó belsejében levő predikátum meghatározta a keresendő kifejezést, addig egy függvény lekérdezésben ezt meg kell explicit határozni. Következésképpen, a változó nevét használjuk a predikátum paraméteréül.
 \subsection{Felüldefiniált tagfüggvény lekérdezés}
 \textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyek egy másikból öröklődnek és felüldefiniálják az \textit{f} függvényüket.}
 \\
@@ -405,15 +392,15 @@ Vannak olyan osztályok, amelyek nem absztrakt osztályok, mégis egyes függvé
 class {
    inherit: class { 
       name: c 	
-      function { name: f } 
+      members: [ function { name: f } ]
    }
    
-   function { name: f @override }
+   members: [ function { name: f @override } ]
 }
 \end{verbatim}
-A keresett függvény, ami felüldefiniálja az ősosztály függvényét egyszerű predikátummal megadható. Az olvashatóság és nyelvfüggetlenség megmarad, a nyelv komplexitása nem növekszik, hiszen predikátumokat eddig is használtunk már.
+A keresett függvény, ami felüldefiniálja az ősosztály függvényét egyszerű predikátum-mal megadható. Az olvashatóság és nyelvfüggetlenség megmarad, a nyelv komplexitása nem növekszik, hiszen predikátumokat eddig is használtunk már.
 \subsection{Örökölt osztály destruktor lekérdezéssel}
-\textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyek olyan osztályból származnak, melynek destruktora nem virtuális.}
+\textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyek olyan osz-tályból származnak, melynek destruktora nem virtuális.}
 \\
 Ez a lekérdezés nem nyelvfüggetlen, hiszen a C++ programozási nyelvben ismert problémára utal, azaz ha egy osztály destruktora nem virtuális, akkor az osztály írója úgy tervezte meg, hogy ne legyen leszármaztatható. Ezzel természetesen nem akadályozta meg, hogy tényleges ne lehessen az osztály egy másiknak az őse. Tehát, fennáll a veszély, hogy egy programozó újrafelhasználás céljából örököltet egy olyan osztályt, ami erre nincs felkészítve. A legsúlyosabb hiba, ami egy ilyen struktúrájú osztályból eredhet az a memória szivárgás. Nehéz felderíteni, és csak azt lehet észrevenni, hogy fogy a memória, hiszen szivárgáskor az allokált memória nem szabadul fel. Ez akkor történhet, ha egy bázis osztálybeli interfészen keresztül szabadítjuk fel a leszármazott objektumot. Mivel a bázis osztály destruktora nem virtuális, ezért a fordító nem is nézi meg, hogy a leszármazott osztály destruktorát kellene meghívnia. Következésképpen, ha a gyerek osztály tartalmaz olyan adattagot, amit dinamikus tárterületen allokál, a deallokáció nem fog végrehajtódni. A program elvárt viselkedése természetesen jól fog működni, viszont teljesítményileg súlyos hibáktól szenved.
 \par A konstruktorhoz hasonlóan a destruktort is lehet alapértelmezett predikátumként definiálni, így azt nem kell mindig a felhasználónak meghatároznia.
@@ -427,10 +414,10 @@ destructor := funcion {
 \begin{verbatim}
 class {
    inherit: class {
-      function { 
+      members: [ function { 
          @destructor 
          !@virtual 
-      }
+      } ]
    }
 }
 \end{verbatim}
@@ -438,8 +425,8 @@ class {
 \section{Szintaxis}
 Felhasználói szempontból egy új nyelv megtanulása mindig visszatartó erő lehet a nyelv elsajátítására. Ezért egy olyan lekérdező nyelv megalkotása volt a célom, amelyet könnyű elsajátítani, megtanulni, intuitív kezelni és nyelvfüggetlen. Az előző fejezetben vizsgált lekérdező nyelvek közül volt olyan, ami ezt úgy kívánta elérni, hogy minden programozó által ismert nyelv szintaktikájára alapoz (SQL). A Java Tools Language a Java nyelvhez igazította a szintaktikáját, megkönnyítve ezzel az abban dolgozókat. Azonban, az így megalkotott nyelv elveszti nyelvfüggetlenségét. A két szempontot szem előtt tartva (létező nyelvre alapozni és nyelvfüggetlen maradni) a JavaScript nyelvhez kifejlesztett, de azóta több nyelvben is alkalmazott JavaScript Object Notation esett a választás.
 \subsection{JavaScript Object Notation}
-A JavaScript Object Notation (JSON) a nevében szereplő scriptnyelvből, a JavaScript-ből alakult ki \cite{json}. A JSON egy olyan objektum, ami az XML-hez képest kis méretű, adatcserére alkalmazott formátum. Az egyszerű formátumának köszönhetően programok számára könnyen parszolható és generálható és mindeközben az ember számára is megmarad olvashatóság. Ezek mellett a JSON egy szöveg alapú objektum, így programozási nyelvtől is független.
-\par A JSON objektumok használata kiterjed kommunikációs protokollok implementálására és konfigurációs információk reprezentálására. Tulajdonképpen, bármilyen információ küldésére, fogadására alkalmas formátum.
+A JavaScript Object Notation (JSON) a nevében szereplő objektumorientált scriptnyelvből, a JavaScript-ből alakult ki \cite{json}. A JSON egy olyan objektum, ami az XML-hez képest kis méretű, adatcserére alkalmazott formátum. Az egyszerű formátu-mának köszönhetően programok számára könnyen parszolható és generálható és mindeközben az ember számára is megmarad olvashatóság. Ezek mellett a JSON egy szöveg alapú objektum, így programozási nyelvtől is független.
+\par A JSON objektumok használata kiterjed kommunikációs protokollok implementá-lására és konfigurációs információk reprezentálására. Tulajdonképpen, bármilyen információ küldésére, fogadására alkalmas formátum.
 \par A JSON objektum struktúrája név/érték párokból tevődik, amit egyszerű módon lehet implementálni bármely programozási nyelv által. Tehát, a JSON egy sorrendtől független név/érték párok halmaza. Az objektum egy nyitó kapcsos zárójellel kezdődik (\{) és egy csukóval végződik (\}). Egy név után kettőspont (:) választja el az értéktől, a párokat pedig vesszővel választja (,) el egymástól. Az értékek típusosak (ellenben az XML-lel), amik lehetnek: karakterlánc, szám, tömb, logikai érték. A tömböket négyzetes zárójelek ([]) között alkotott elemeket értjük, vesszővel elválasztva. Az elemek bármely JSON objektum lehet. Ezeken felül lehetnek összetett típusok, azaz az előbbi egyszerű típusok által alkotott összetett objektumok, illetve a \textit{null} kulcsszóval jelölt üres objektum. A következő példában telefonkönyvben található bejegyzés egy lehetséges struktúrája látható.
 \begin{verbatim}
 {
@@ -467,10 +454,11 @@ A "firstName" és "lastName" egyszerű karakterláncok. Az "address" nevű objek
 \subsection{CQL szintaxis}
 A lekérdező nyelv szintaktikáját a JSON formátumra alapoztam. A választás teljesen megfelel a szintaktikával tett feltételeknek: a programozó számára legyen könnyen olvasható (a struktúra adja ezt a feltételt), elsajátítható (a JSON széles körben elterjedt már nem csak a JavaScript fejlesztők körében is). Azonban, csak a CQL alapját adja a JSON szintaktikája. Számos ponton ki kellett bővíteni a lekérdező nyelvet, például predikátumok bevezetésével, nevesített objektumokkal.
 \subsubsection{Entitások}
-A JSON objektumok névtelenek, csak a struktúra alapján lehet megmondani a típusukat. Egy lekérdező nyelvben viszont meg kell tudni mondani, hogy a programozó mire szeretne keresni (függvény, osztály, változó, stb.). Ezért CQL nyelvben entitásokat tartalmaz, amivel explicit meg lehet adni, hogy mely forráskódbeli egységekben történjen a keresés. Az entitások meghatározásánál az objektumorientált paradigma részei játszottak szerepet. Az objektumorientáltság fő komponense az osztály. Az osztályt példányosítva kapjuk meg az objektumokat. Az osztály megadja, hogy az abból példányosított objektumoknak milyen szerkezetük van (adattagok), és milyen műveletek (tagfüggvények) végezhetők el rajtuk. Következésképpen, az osztálynak szerepelnie kell a lekérdező nyelvben. Természetesen az osztályt képező elemeket is tartalmaznia kell a nyelvnek, hiszen a kereséshez szükséges szűrőfeltételek ezek alapján is megadhatóak. Tehát, (tag)függvények és az adattagok is részét képezik az entitásoknak. Az adattagok lehetnek más objektumok is (nem csak primitív típusok, mint például az \textit{int} vagy \textit{bool}), ezért érdemes a változókkal együtt kezelni. Az objektumorientált paradigmától eltávolodva egy program szerkezetét az absztrakt szintaxisfa írja le. Ennek elemeit szintén lekérdezhetővé lehet tenni, amely elemek különböző utasítások lehetnek.
-\par Minden entitás attribútumokkal rendelkezik. A JSON formátumhoz hasonlóan az attribútum egy név és érték párból tevődik össze. Minden entitás definiál különböző attribútumokat, amik szűrőfeltételeknek felelnek meg. Egy entitás a nevével kezdődik, majd kapcsos zárójelek között szerepelnek az attribútumai. Az attribútumok megadása opcionális. Tételezzük fel, hogy olyan függvényeket keresünk, aminek \textit{int} típusú visszatérési értékkel rendelkezik, de a függvény nevét nem tudjuk. Ekkor, mivel a név attribútum nem kötelező, ezért arra nem is teszünk megszorítást, annak kiírása elhagyható. Ahogy a JSON formátum is megengedi az összetett objektumok beágyazását, úgy a CQL-ben is lehetőség van olyan attribútumokat definiálni, melyek értékének típusa lehet például osztály vagy változó. Erre lehet tekinteni úgy is, mint egy allekérdezés. 
+A JSON objektumok névtelenek, csak a struktúra alapján lehet megmondani a típusukat. Egy lekérdező nyelvben viszont meg kell tudni mondani, hogy a programozó mire szeretne keresni (függvény, osztály, változó, stb.). Ezért CQL nyelvben entitásokat tartalmaz, amivel explicit meg lehet adni, hogy mely forráskódbeli egységekben történjen a keresés. Az entitások meghatározásánál az objektumorientált paradigma részei játszottak szerepet. Az objektumorientáltság fő komponense az osztály. Az osztályt példányosítva kapjuk meg az objektumokat. Az osztály megadja, hogy az abból példányosított objektumoknak milyen szerkezetük van (adattagok), és milyen műveletek (tagfüggvények) végezhetők el rajtuk. Következésképpen, az osztálynak szerepelnie kell a lekérdező nyelvben. Természetesen az osztályt képező elemeket is tartalmaznia kell a nyelvnek, hiszen a kereséshez szükséges szűrőfeltételek ezek alapján is megadhatóak. Tehát, (tag)függvények és az adattagok is részét képezik az entitásoknak. Az adattagok lehetnek más objektumok is (nem csak primitív típusok, mint például az \textit{int} vagy \textit{bool}), ezért érdemes a változókkal együtt kezelni. Az objektumorientált paradigmától eltávolodva egy program szerkezetét az absztrakt szintaxisfa írja le. Ennek elemeit szintén lekérdezhe-tővé lehet tenni, amely elemek különböző utasítások lehetnek.
+\par Minden entitás attribútumokkal rendelkezik. A JSON formátumhoz hasonlóan az attribútum egy név és érték párból tevődik össze. Minden entitás definiál különbö-ző attribútumokat, amik szűrőfeltételeknek felelnek meg. Egy entitás a nevével kezdődik, majd kapcsos zárójelek között szerepelnek az attribútumai. Az attribútu-mok megadása opcionális. Tételezzük fel, hogy olyan függvényeket keresünk, aminek \textit{int} típusú visszatérési értékkel rendelkezik, de a függvény nevét nem tudjuk. Ekkor, mivel a név attribútum nem kötelező, ezért arra nem is teszünk megszorítást, annak kiírása elhagyható. Ahogy a JSON formátum is megengedi az összetett objektumok beágyazását, úgy a CQL-ben is lehetőség van olyan attribútumokat definiálni, melyek értékének típusa lehet például osztály vagy változó. Erre lehet tekinteni úgy is, mint egy allekérdezés.
+\par Az entitásban szereplő attribútumok számának növelésével erősíthetők a keresett entitás szűrőfeltételei. Ezek mind logikai "és" kapcsolatot írnak le. Ha azonban "vagy" kapcsolatot szeretnénk definiálni, akkor azt megtehetjük úgy, hogy az adott attribútumot többször definiáljuk. Erre már fentebb láttunk példát.
 \paragraph{Változó}
-Egy lekérdezésben a változó entitás a \textit{variable} kulcsszóval kezdődik. Jelölhet például egy egyszerű változót egy függvényen belül, vagy akár lehet adattagja is egy osztálynak, objektumnak. Az attribútumok között egyértelműen szerepel a név és a névtér. Egy változó meghatározó jellemzője a típusa, ezért szűrő feltételt erre is lehet meghatározni. Ha egy osztály adattagjáról beszélünk, akkor azt a \textit{class} attribútum segítségével adható meg. Itt (is) jön előtérbe, hogy az attribútumok értéke lehet egy másik entitás (azaz egy összetett objektum).
+Egy lekérdezésben a változó entitás a \textit{variable} kulcsszóval kezdődik. Jelöl-het például egy egyszerű változót egy függvényen belül, vagy akár lehet adattagja is egy osztálynak, objektumnak. Az attribútumok között egyértelműen szerepel a név és a névtér. Egy változó meghatározó jellemzője a típusa, ezért szűrő feltételt erre is lehet meghatározni. Ha egy osztály adattagjáról beszélünk, akkor azt a \textit{class} attribútum segítségével adható meg. Itt (is) jön előtérbe, hogy az attribútumok értéke lehet egy másik entitás (azaz egy összetett objektum).
 \begin{center}
 	\begin{tabular}{| l | l | l |}
 		\hline
@@ -482,7 +470,7 @@ Egy lekérdezésben a változó entitás a \textit{variable} kulcsszóval kezdő
 	\end{tabular}
 \end{center}
 \paragraph{Függvény}
-A másik entitás, amik az osztály szerves részét képezik, azok a tagfüggvények. Egy programban függvények hívása az egyik legalapvetőbb vezérlési mechanizmus, ezért ennek a komponensnek a vizsgálata elsőrangú szerepet játszott a lekérdező nyelv megalkotásakor. Egy függvény neve mellett a szignatúrája az, ami meghatározza. Ennek megfelelően egy keresés szűrőfeltétele lehet a visszatérési érték típusa vagy a paraméterlistája. A paraméterlista jól illeszkedik a JSON formátumban ismert tömb típusra. A típusokat a nyitó- és zárójelek közé tesszük ('[', ']' ). Előállhat olyan eset, hogy valamely paraméterre nem vagyunk kíváncsiak, vagy csak nem ismerjük. Az ilyen problémák megoldására használatos speciális karakterek, úgynevezett helyettesítő karakterek. Az egy paramétert kiváltó karakter a '\_', a többet '?'. Az általánosan használt '*' karakter a C/C++ programozási nyelvekben a pointer-t jelenti, ezért esett a választás a kérdőjelre. Így olyan kifejezések is kereshetők, mint például a második paramétere a függvénynek legyen \textit{int}. Üres paraméterlistát úgy jelezhetjük, hogy a négyzetes zárójelek közé nem teszünk semmit: \texttt{[]}. A paraméterlistához tartozik még, annak számossága, amire szintén lehet hivatkozni az \textit{argumentCount} attribútummal.
+A másik entitás, amik az osztály szerves részét képezik, azok a tagfügg-vények. Egy programban függvények hívása az egyik legalapvetőbb vezérlési mechanizmus, ezért ennek a komponensnek a vizsgálata elsőrangú szerepet játszott a lekérdező nyelv megalkotásakor. Egy függvény neve mellett a szignatúrája az, ami meghatározza. Ennek megfelelően egy keresés szűrőfeltétele lehet a visszatérési érték típusa vagy a paraméterlistája. A paraméterlista jól illeszkedik a JSON formátumban ismert tömb típusra. A típusokat a nyitó- és zárójelek közé tesszük ('[', ']' ). Előállhat olyan eset, hogy valamely paraméterre nem vagyunk kíváncsiak, vagy csak nem ismerjük. Az ilyen problémák megoldására használatos speciális karakterek, úgynevezett helyettesítő karakterek. Az egy paramétert kiváltó karakter a '\_', a többet '?'. Az általánosan használt '*' karakter a C/C++ programozási nyelvekben a pointer-t jelenti, ezért esett a választás a kérdőjelre. Így olyan kifejezések is kereshetők, mint például a második paramétere a függvénynek legyen \textit{int}. Üres paraméterlistát úgy jelezhetjük, hogy a négyzetes zárójelek közé nem teszünk semmit: \texttt{[]}. A paraméterlistához tartozik még, annak számossága, amire szintén lehet hivatkozni az \textit{argumentCount} attribútummal.
 \par A változóhoz hasonlóan, a függvénynek is megadható, hogy mely osztály tagját képezi. Ehhez kapcsolódóan az elérési szintjét is meg lehet adni: \textit{private}, \textit{protected} vagy \textit{public}.
 \par Egy programban való eligazodást nagyban nehezíti a függvények hívása, ami hosszú hívási láncot is eredményezhet. Tehát, fontos, hogy függvényen belül milyen más eljárások hívódnak. Ennek az inverze is rendkívüli fontossággal bír: egy függvényt a forráskódban hol hívnak. Mindkét attribútum értéke egyben allekérdezés is egy függvényre, így a programozónak még több lehetősége van testre szabni a keresett eljárást.
 \begin{center}
@@ -501,10 +489,9 @@ A másik entitás, amik az osztály szerves részét képezik, azok a tagfüggv�
 	\end{tabular}
 \end{center}
 \paragraph{Osztály}
-Az osztályok különböznek az eddig említett entitásoktól. Egy osztályt reprezentáló objektum a CQL-ben nem csak attribútumokat tartalmazhat, hanem tagfüggvényeket és adattagokat. A JSON szintaktikája természetesen lehetővé tenné, hogy ezek szintén attribútumokként legyenek kezelve. A megvalósítást tömbök alkalmazásával lehet elérni. Azonban az olvashatóság megőrzése és az egyszerűség érdekében az osztályokba be lehet ágyazni függvény és változó lekérdezéseket. A lekérdezésből egyből látszik, hogy egy osztályon belül definiált függvények vagy változók az osztály részei. Tehát az attribútumok használata feleslegessé válna. Adattagokból és tagfüggvényekből természetesen bármennyit lehet definiálni (vagy akár egyet sem). Minden függvény vagy változó az osztálynak egy tagjára tesz megszorítást. Tehát, ha a felhasználó olyan osztályokat keres, aminek van f nevű függvénye, akkor az lekérdező osztály objektumon belül definiál egy ennek megfelelő függvény lekérdezést.
-\par Az alapvető név és névtér attribútumokon kívül egy osztálynak lehet \textit{inherit} tulajdonsága. Objektumorientált programozásban az újrafelhasználhatóság használatának egyik eszköze az öröklődés. Emiatt is fontos, hogy olyan attribútum is legyen, amivel szűrőfeltételnek megadható az őse. Magától értetődően ez az attribútum egy osztály allekérdezés, ahogyan a függvény lekérdezésnél a hívási tulajdonság, úgy itt is a testre szabhatóság miatt nem csak névre lehet szűrni, hanem egyéb attribútumokra is.
-\par Az öröklődéshez kapcsolódik, de használatát tekintve elkülönítjük. Ez az interfész osztályból való származtatás. Az interfész (vagy absztrakt osztály) olyan osztály, amit nem lehet példányosítani. Általában egy felületet biztosít és tagfüggvényeit csak deklarálja, nem definiálja. Ha egy osztály őse egy interfész és annak összes absztrakt tagfüggvényét definiálja, akkor az osztály implementálja az interfészt. Ennek a speciális öröklődés is lehet kereséskor egy feltétel a felhasználó részéről, amit szintén egy osztályra való allekkérdezéssel lehet megoldani.
-\par Az osztályok újrafelhasználhatóságának egy másik formája a generikus programozás. Lényege, hogy az osztályokat felparaméterezhetjük típusokkal, így még általánosítva a létrehozható objektumokat. Habár napjainkban a programozási nyelvek segítségével lehetőség van megszorításokat tenni a típusparaméterre, például C++ nyelvben ez csak a C++17-es szabványtól alkalmazható (concept-ek). A lekérdező nyelv által megadható a \textit{template} attribútum, amivel megszorítás tehető a típusparaméterre. Ezzel olyan specializált osztályok kereshetők, amivel már konkrét típussal van paraméterezve, ezért példányosítható is.
+Az osztályok egyik legalapvetőbb részei a tagfüggvények és az adattagok. Ezeket a lekérdező nyelvben lista típusú attribútumokkal lehet meghatározni. A tagfüggvények számára a \textit{members}, míg az adattagok leírására a \textit{fields} attribútum szolgál. Adattagokból és tagfüggvényekből természetesen bármennyit lehet definiálni (vagy akár egyet sem). Minden függvény vagy változó az osztálynak egy tagjára tesz megszorítást. Tehát, ha a felhasználó olyan osztályokat keres, aminek van f nevű függvénye, akkor a lekérdező osztály objektumon belül definiál egy ennek megfelelő függvény lekérdezést.
+\par Az alapvető név és névtér attribútumokon kívül egy osztálynak lehet \textit{inherit} tulajdonsága. Objektumorientált programozásban az újrafelhasználhatóság használa-tának egyik eszköze az öröklődés. Emiatt is fontos, hogy olyan attribútum is legyen, amivel szűrőfeltételnek megadható az őse. Magától értetődően ez az attribútum egy osztály allekérdezés, ahogyan a függvény lekérdezésnél a hívási tulajdonság, úgy itt is a testre szabhatóság miatt nem csak névre lehet szűrni, hanem egyéb attribútumokra is.
+\par Az öröklődéshez kapcsolódik, de használatát tekintve elkülönítjük. Ez az interfész osztályból való származtatás. Az interfész (vagy absztrakt osztály) olyan osztály, amit nem lehet példányosítani. Általában egy felületet biztosít és tagfüggvé-nyeit csak deklarálja, nem definiálja. Ha egy osztály őse egy interfész és annak összes absztrakt tagfüggvényét definiálja, akkor az osztály implementálja az interfészt. Ennek a speciális öröklődés is lehet kereséskor egy feltétel a felhasználó részéről, amit szintén egy osztályra való allekkérdezéssel lehet megoldani.
 \begin{center}
 	\begin{tabular}{| l | l | l |}
 		\hline
@@ -513,7 +500,8 @@ Az osztályok különböznek az eddig említett entitásoktól. Egy osztályt re
 		namespace & String & Osztály melyik névtérben található. \\ \hline
 		inherit & Osztály & Milyen osztályból öröklődik. \\ \hline
 		implement & Osztály & Melyik osztályt valósítja meg. \\ \hline
-		template & Osztály & Az típusparaméterrel rendelkező osztály paramétere. \\ \hline
+		members & Lista & Tagfüggvények listája. \\ \hline
+		fields & Lista & Adattagok listája. \\ \hline
 	\end{tabular}
 \end{center}
 \subsubsection{Nyelvben használható változók}
@@ -550,7 +538,7 @@ copy_ctor := function {
 }
 \end{verbatim}
 \par A fentebb látható másoló konstruktor predikátum egy olyan függvény lekérdezés, aminek egy változója van (a T, aminek a másoló konstruktorát akarjuk megkapni), és három attribútumára lett téve megszorítás. Az attribútumok között megtalálható a \textit{class}, amivel leszűrjük azokat a függvényeket, amelyek egy olyan osztálynak a tagfüggvénye, aminek a neve a változóként definiált T. A függvény nevére is teszünk megszorítást, ezzel megkapjuk a konstruktorokat, hiszen az osztály nevével megegyező függvények csak konstruktorok lehetnek. Az utolsó attribútummal tovább specializáljuk a függvényt: az argumentumlistának egy elemet adunk meg, egy referencia T típust.
-\par A másik része a predikátumoknak a nyelv eszközeivel nem leírható, attribútumokkal nem kifejezhető szűrési feltételek megadása. Ezekhez többek között beletartozik a \textit{static}, \textit{abstract}, \textit{write}, \textit{read}, stb. Ezek rendre megmondják, hogy az entitás statikus-e (lehet osztály, függvény vagy változó bármelyikére alkalmazni), absztrakt-e (osztály vagy függvény), írják-e (változó), olvassák-e (változó). Továbbá a nyelv bővítményének is felfoghatók nyelvspecifikus predikátumokkal lehet további megszorításokat elérhetővé tenni a felhasználó számára. Ilyenek például a C++ nyelvben függvényekhez használt \textit{const} vagy \textit{virtual} predikátumok. Ezek a predikátumokat értelem szerűen csak függvények lekérdezésében alkalmazhatók.
+\par A másik része a predikátumoknak a nyelv eszközeivel nem leírható, attribútumok-kal nem kifejezhető szűrési feltételek megadása. Ezekhez többek között beletartozik a \textit{static}, \textit{abstract}, \textit{write}, \textit{read}, stb. Ezek rendre megmondják, hogy az entitás statikus-e (lehet osztály, függvény vagy változó bármelyikére alkalmazni), absztrakt-e (osztály vagy függvény), írják-e (változó), olvassák-e (változó). Továbbá a nyelv bővítményének is felfoghatók nyelvspecifikus predikátumokkal lehet további megszorításokat elérhetővé tenni a felhasználó számára. Ilyenek például a C++ nyelvben függvényekhez használt \textit{const} vagy \textit{virtual} predikátumok. Ezek a predikátumokat értelem szerűen csak függvények lekérdezésében alkalmazhatók.
 \par Ezen felül olyan predikátumok is ide tartoznak, amelyek nem szigorúan az entitásokhoz köthető tulajdonságok. Nagyon jó példa erre a változóknál található. Egy változó hivatkozásánál általában sokkal fontosabb, hogy mikor íródik az adott változó, és az olvasás csak mellékes. Mindkét esetre (írás, olvasás) a nyelvnek beépített predikátuma létezik.
 \subsubsection{Szintaktikai cukorkák}
 A gyors és egyszerű lekérdezések leírásához definiálunk a nyelvhez szintaktikai cukorkákat. Olyan egyszerű esetekben, amikor csak egy attribútumot definiál a felhasználó a lekérdezésben elhagyhatók a kapcsos zárójelek.
@@ -571,6 +559,16 @@ function name: f
 function f
 \end{verbatim}
 \par Így rendkívül lerövidítettük a leggyakrabban alkalmazott lekérdezések hosszát, amivel a felhasználó is gyorsabban tud keresni. A szintaktikai cukorkát természetesen érvényben vannak az allekérdezések során is.
+\par A lista típusú attribútumok írásán is lehet egyszerűsíteni. Gyakran csak egy elemű listát határoztunk meg a lekérdezéseinkben, amikor tagfüggvényeket definiáltunk. Az egy elemű listák esetében elhagyható a listát jelző négyzetes zárójelek, hiszen így is egyértelmű kifejezést kapunk. Természetesen nem csak a tagfüggvények-re igaza, hanem az adattagokra és a függvény argumentumlistájára is.
+\begin{verbatim}
+function {
+   arguments: [int]
+}
+//Ekivavelns lekérdezés
+function {
+   arguments: int
+}
+\end{verbatim}
 \subsubsection{Reguláris kifejezések}
 Nem várható el a felhasználótól, hogy minden típust, változó vagy függvény nevet pontosan tudjon, ismerjen. Egy projekt kódolási konvenciói viszont nagyban hozzájárulnak a kódbázisban való navigálásban. Tehát nem csak akkor veszi hasznát egy részletnek a programozó, ha csak emlékei vannak a keresett entitásról, hanem akkor is, ha nevezési konvenciókat alkalmaznak a projekten. Ilyen részletek definiálásához reguláris kifejezéseket használata ajánlott.
 \par A lista típus definiálásánál már előkerültek a reguláris kifejezések. Hasonlóan az ott említett probléma jelentkezik egyszerű szöveg értéknél. Gondoljunk bele, hogy például egy függvény visszatérési értékének szeretne a programozó reguláris kifejezést megadni. Ekkor a sokak által használt POSIX reguláris kifejezések csillag karakterét (*), ami nulla vagy több karaktert helyettesít a kifejezésben, nem lehetne megkülönböztetni a C/C++ programozási nyelvekben használt mutató típusmódosító karakterrel szemben. Azonban ez a probléma megoldható lenne ha védőkaraktert használnánk: például a /* jelentené a mutató típust. Ez a megoldás azonban elrontaná az egyszerű mutató típusok átlátható leírását. Egy másik lehetőség, hogy ha reguláris kifejezésként értelmezett nulla vagy több karaktert jelentő helyettesítést szeretné használni a felhasználó, akkor azt kell a per jellel semlegesítenie. Ez utóbbi megoldásra esett a választás, mivel reguláris kifejezések írása ritkább, mint a mutató jelölés meghatározása egy adott típushoz.
@@ -596,7 +594,7 @@ A probléma akkor adódik, ha a programban nem intuitív, hogy egy osztályt mi 
 \par  Tehát, van egy osztály definíciónk (aminek privát konstruktora van), és keressük azt az osztályt, aminek van olyan függvénye, hogy egy ilyen típusú objektummal tér vissza. 
 \begin{verbatim}
 factory_method(ConcreteProduct) := class {
-   function {
+   members: function {
       return: ConcreteProduct
    }
 }
@@ -606,17 +604,17 @@ factory_method(ConcreteProduct) := class {
 factory_method(Product, ConcreteProduct) := class {
    inherit: class {
       @abstract
-      function { 
+      members: function { 
          return: Product 
       }
    }
 
-   function {
+   members: function {
       return: ConcreteProduct
    }
 }
 \end{verbatim}
-\par A predikátum használatával generikussá, újra felhasználhatóvá tehető ez a típusú lekérdezés. A predikátum két paramétere az ismert osztály (\textit{ConcreteProduct}), amiből szeretnénk objektumot létrehozni és annak az ősosztály (\textit{Product}). A lekérdezésben az \textit{inherit} attribútummal erősítve a feltételeket, egy szűkített listából gyorsan megkapható a keresett osztály. Ezzel az lett megadva, hogy az interfészként szolgáló ősosztálynak is van olyan metódusa, amivel előállítható az objektum. Következésképpen, elhagytuk a találatok listájából például az olyan osztályokat, aminek van csak \textit{getter} tagfüggvény miatt van a keresendő típussal visszatérő függvénye.
+\par A predikátum használatával generikussá, újra felhasználhatóvá tehető ez a típu-sú lekérdezés. A predikátum két paramétere az ismert osztály (\textit{ConcreteProduct}), amiből szeretnénk objektumot létrehozni és annak az ősosztály (\textit{Product}). A lekér-dezésben az \textit{inherit} attribútummal erősítve a feltételeket, egy szűkített listából gyorsan megkapható a keresett osztály. Ezzel az lett megadva, hogy az interfészként szolgáló ősosztálynak is van olyan metódusa, amivel előállítható az objektum. Következésképpen, elhagytuk a találatok listájából például az olyan osztályokat, aminek van csak \textit{getter} tagfüggvény miatt van a keresendő típussal visszatérő függvénye.
 \section{Egyke osztályok keresése}
 Az egyke egy olyan objektum létrehozási minta, aminek segítségével elérhető, hogy az egyke osztályból mindig pontosan egy objektum létezzen a program futása során. A programtervezési mintára azonban sokan anti-mintaként tekintenek, amiket nem szabadna használni. Egy gyakran előforduló probléma, hogy az egyke objektumok megnövekednek egy program fejlődése során. Ha az ilyen típusú objektumokból túl sok van, azzal átláthatatlanná tehetjük a programunkat. A rossz tervezési hibát úgy lehet kijavítani, hogy csökkentjük az egyke osztályok számát.
 \subsection{Egyke tervminta}
@@ -628,15 +626,17 @@ A egyke tervmintában az osztály felelős azért, hogy mindig egy objektum lét
 singleton(C) := class {
    name: C
 
-   function {
-      return: C
-      @static
-   }
+   members: [ 
+      function {
+         return: C
+         @static
+      },
 
-   function {
-      access: private 
-      @ctor      
-   }
+      function {
+         access: private 
+         @ctor      
+      }
+   ]
 }
 \end{verbatim}
 \par Egy egyke predikátumot a fent látható módon tudjuk leírni, amiben semmilyen plusz feltétel nincs, mint amit a tervezési minta absztrakt, magas szinten definiál. A két feltételt két allekérdezésként adjuk meg, ahol van egy privát konstruktor és egy statikus függvény, aminek visszatérési értékének típusa maga az osztály. Az új \textit{static} predikátum egyértelműen egy statikus tagfüggvényre utal, míg a \textit{ctor} nevű predikátumot már definiáltuk a konstruktor lekérdezéseknél. Ha egyszerű lekérdezést szeretnénk írni (és nem predikátumot definiálni, ahogyan itt tettük), akkor a statikus függvény allekérdezésben a \textit{return} attribútum értékét a \textit{This} kulcsszóval határozzuk meg.
@@ -654,7 +654,7 @@ Az átalakítóval olyan osztályok is tudnak egymással kommunikálni, kapcsola
 A lekérdezéshez az objektum átalakító osztályt határozzuk meg. Mivel a "régi" kódból ismerjük az osztályt, ezért annak a neve paraméterként szolgál a predikátum definíciójában. Mint az előző esettanulmánynál, úgy itt is a predikátummal (az újrafelhasználhatóságot szem előtt tartva) lehet leírni keresendő osztályokat. Az átalakítóval kapcsolatban viszont csak annyi információ áll rendelkezésre, hogy annak az adattagja az átalakított objektum, illetve rendelkezik valamennyi számú, szignatúrájú tagfüggvénnyel. Értelem szerűen az utóbbi feltételt nem lehetséges definiálni a lekérdező nyelv segítségével. Azonban az adattagra tehetünk megszorítást: mivel az átalakított osztályon kívül más objektumot nem aggregál az átalakító, így megadható további szűrő feltételnek, hogy az átalakított objektum az egyedüli adattag az osztályban.
 \begin{verbatim}
 wrapper(Adaptee) := class {
-   variable { 
+   fields: variable { 
       type: Adaptee
       @only
    }
@@ -696,6 +696,8 @@ wrapper(Adaptee) := class {
 	\bibitem{rule_of_three} $http://en.cppreference.com/w/cpp/language/rule_of_three$ , 2017.05.09
 	
 	\bibitem{xpath} Berglund, Anders, et al. "Xml path language (xpath)." World Wide Web Consortium (W3C) (2003).
+	
+	\bibitem{grep} $https://www.gnu.org/software/grep/manual/grep.html$
 	
 \end{thebibliography}
 	
