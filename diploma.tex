@@ -418,9 +418,9 @@ A keresett függvény, ami felüldefiniálja az ősosztály függvényét egysze
 Ez a lekérdezés nem nyelvfüggetlen, hiszen a C++ programozási nyelvben ismert problémára utal, azaz ha egy osztály destruktora nem virtuális, akkor az osztály írója úgy tervezte meg, hogy ne legyen leszármaztatható. Ezzel természetesen nem akadályozta meg, hogy tényleges ne lehessen az osztály egy másiknak az őse. Tehát, fennáll a veszély, hogy egy programozó újrafelhasználás céljából örököltet egy olyan osztályt, ami erre nincs felkészítve. A legsúlyosabb hiba, ami egy ilyen struktúrájú osztályból eredhet az a memória szivárgás. Nehéz felderíteni, és csak azt lehet észrevenni, hogy fogy a memória, hiszen szivárgáskor az allokált memória nem szabadul fel. Ez akkor történhet, ha egy bázis osztálybeli interfészen keresztül szabadítjuk fel a leszármazott objektumot. Mivel a bázis osztály destruktora nem virtuális, ezért a fordító nem is nézi meg, hogy a leszármazott osztály destruktorát kellene meghívnia. Következésképpen, ha a gyerek osztály tartalmaz olyan adattagot, amit dinamikus tárterületen allokál, a deallokáció nem fog végrehajtódni. A program elvárt viselkedése természetesen jól fog működni, viszont teljesítményileg súlyos hibáktól szenved.
 \par A konstruktorhoz hasonlóan a destruktort is lehet alapértelmezett predikátumként definiálni, így azt nem kell mindig a felhasználónak meghatároznia.
 \begin{verbatim}
-destructor(T) := funcion {
-   class: class { name: T }
-   name : ~T
+destructor := funcion {
+   class: class { name: $T }
+   name : ~$T
 }
 \end{verbatim}
 \par A virtuális függvények vizsgálatára egy újabb predikátumot kell bevezetni. Ezek akkor tesznek eleget a predikátumnak ha a C++ nyelv által használt \textit{virtual} kulcsszóval látják el a függvényt.
@@ -428,7 +428,7 @@ destructor(T) := funcion {
 class {
    inherit: class {
       function { 
-         @destructor(This) 
+         @destructor 
          !@virtual 
       }
    }
