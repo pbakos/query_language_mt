@@ -30,21 +30,21 @@
 \select@language {magyar} \contentsline {subsection}{\numberline {3.2.2}CQL szintaxis}{26}
 \select@language {magyar} \contentsline {subsubsection}{Entit\IeC {\'a}sok}{26}
 \select@language {magyar} \contentsline {paragraph}{V\IeC {\'a}ltoz\IeC {\'o}}{27}
-\select@language {magyar} \contentsline {paragraph}{F\IeC {\"u}ggv\IeC {\'e}ny}{27}
-\select@language {magyar} \contentsline {paragraph}{Oszt\IeC {\'a}ly}{28}
-\select@language {magyar} \contentsline {subsubsection}{Nyelvben haszn\IeC {\'a}lhat\IeC {\'o} v\IeC {\'a}ltoz\IeC {\'o}k}{29}
-\select@language {magyar} \contentsline {subsubsection}{Predik\IeC {\'a}tumok}{29}
-\select@language {magyar} \contentsline {subsubsection}{Szintaktikai cukork\IeC {\'a}k}{31}
-\select@language {magyar} \contentsline {subsubsection}{Regul\IeC {\'a}ris kifejez\IeC {\'e}sek}{32}
-\select@language {magyar} \contentsline {subsubsection}{Komment}{33}
-\select@language {magyar} \contentsline {chapter}{\numberline {4}Esettanulm\IeC {\'a}ny}{34}
-\select@language {magyar} \contentsline {section}{\numberline {4.1}T\IeC {\'\i }pus p\IeC {\'e}ld\IeC {\'a}nyos\IeC {\'\i }t\IeC {\'a}sa gy\IeC {\'a}rt\IeC {\'o} m\IeC {\H u}velet tervmin-t\IeC {\'a}val}{34}
-\select@language {magyar} \contentsline {subsection}{\numberline {4.1.1}Gy\IeC {\'a}rt\IeC {\'o} m\IeC {\H u}velet tervminta}{34}
-\select@language {magyar} \contentsline {subsection}{\numberline {4.1.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{35}
-\select@language {magyar} \contentsline {section}{\numberline {4.2}Egyke oszt\IeC {\'a}lyok keres\IeC {\'e}se}{36}
-\select@language {magyar} \contentsline {subsection}{\numberline {4.2.1}Egyke tervminta}{37}
-\select@language {magyar} \contentsline {subsection}{\numberline {4.2.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{37}
-\select@language {magyar} \contentsline {section}{\numberline {4.3}\IeC {\'A}talak\IeC {\'\i }t\IeC {\'o} oszt\IeC {\'a}ly keres\IeC {\'e}se}{38}
-\select@language {magyar} \contentsline {subsection}{\numberline {4.3.1}\IeC {\'A}talak\IeC {\'\i }t\IeC {\'o} tervminta}{38}
-\select@language {magyar} \contentsline {subsection}{\numberline {4.3.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{39}
-\select@language {magyar} \contentsline {chapter}{\numberline {5}Konkl\IeC {\'u}zi\IeC {\'o}}{40}
+\select@language {magyar} \contentsline {paragraph}{F\IeC {\"u}ggv\IeC {\'e}ny}{28}
+\select@language {magyar} \contentsline {paragraph}{Oszt\IeC {\'a}ly}{30}
+\select@language {magyar} \contentsline {subsubsection}{Nyelvben haszn\IeC {\'a}lhat\IeC {\'o} v\IeC {\'a}ltoz\IeC {\'o}k}{31}
+\select@language {magyar} \contentsline {subsubsection}{Predik\IeC {\'a}tumok}{32}
+\select@language {magyar} \contentsline {subsubsection}{Szintaktikai cukork\IeC {\'a}k}{33}
+\select@language {magyar} \contentsline {subsubsection}{Regul\IeC {\'a}ris kifejez\IeC {\'e}sek}{34}
+\select@language {magyar} \contentsline {subsubsection}{Komment}{35}
+\select@language {magyar} \contentsline {chapter}{\numberline {4}Esettanulm\IeC {\'a}ny}{36}
+\select@language {magyar} \contentsline {section}{\numberline {4.1}T\IeC {\'\i }pus p\IeC {\'e}ld\IeC {\'a}nyos\IeC {\'\i }t\IeC {\'a}sa gy\IeC {\'a}rt\IeC {\'o} m\IeC {\H u}velet tervmin-t\IeC {\'a}val}{36}
+\select@language {magyar} \contentsline {subsection}{\numberline {4.1.1}Gy\IeC {\'a}rt\IeC {\'o} m\IeC {\H u}velet tervminta}{36}
+\select@language {magyar} \contentsline {subsection}{\numberline {4.1.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{37}
+\select@language {magyar} \contentsline {section}{\numberline {4.2}Egyke oszt\IeC {\'a}lyok keres\IeC {\'e}se}{38}
+\select@language {magyar} \contentsline {subsection}{\numberline {4.2.1}Egyke tervminta}{39}
+\select@language {magyar} \contentsline {subsection}{\numberline {4.2.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{39}
+\select@language {magyar} \contentsline {section}{\numberline {4.3}\IeC {\'A}talak\IeC {\'\i }t\IeC {\'o} oszt\IeC {\'a}ly keres\IeC {\'e}se}{40}
+\select@language {magyar} \contentsline {subsection}{\numberline {4.3.1}\IeC {\'A}talak\IeC {\'\i }t\IeC {\'o} tervminta}{40}
+\select@language {magyar} \contentsline {subsection}{\numberline {4.3.2}Lek\IeC {\'e}rdez\IeC {\'e}s}{41}
+\select@language {magyar} \contentsline {chapter}{\numberline {5}Konkl\IeC {\'u}zi\IeC {\'o}}{42}
