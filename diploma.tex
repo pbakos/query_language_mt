@@ -286,7 +286,7 @@ variable {
    @read
 }
 \end{verbatim}
-\par A lekérdezéshez új nyelvi elemmel egészítjük ki a CQL-t: predikátumokkal. Egy predikátum a '@' karakterrel kezdődik, majd ez után következik a neve. Felfogható olyan attribútumnak is, amely logikai értékű. Azonban egy attribútumról a felhasználó azt gondolhatja (teljesen jogosan), hogy az szorosan kapcsolódik az azt egységbe záró entitáshoz. Egy változó írása vagy olvasása nem része, "tartozéka", tulajdonsága az entitásnak. Ebből a megfontolásból egy változó írása/olvasása nem attribútuma az entitásnak, hanem létezik egy predikátum, ami megszorítja a forráskódban fellelhető változó előfordulásának találatait. Ezeket a predikátumokat a nyelv előre definiálja.
+\par A lekérdezéshez új nyelvi elemmel egészítjük ki a CQL-t: predikátumokkal. Egy predikátum a '@' karakterrel kezdődik, majd ez után következik a neve. Felfogható olyan attribútumnak is, amely logikai értékű. Ebből a megfontolásból egy változó írása/olvasása nem attribútuma az entitásnak, hanem létezik egy predikátum, ami megszorítja a forráskódban fellelhető változó előfordulásának találatait. Ezeket a predikátumokat a nyelv előre definiálja, azaz beépített predikátumoknak tekinthetők (később látunk rá példát, hogy vannak predikátumok, amiket a nyelv segítségével lehet definiálni).
 \subsection{Származtatott osztály lekérdezés}
 \textbf{Lekérdezés: Határozzuk meg azokat az osztályokat, amelyek egy absztrakt osztályból (interfészből) származnak/implementálnak.}
 \\
